@@ -16,7 +16,9 @@ from resolver.roles import mark_read_write_modules
 from resolver.tenants import resolve_tenant, tenant_membership
 
 
-def _namespace_base(tree: ConfigTree, cluster: str, namespace: str) -> dict[str, Any]:
+def _namespace_base(
+    tree: ConfigTree, cluster: str, namespace: str
+) -> tuple[dict[str, Any], str]:
     """Merge namespace-scoped layers 1 (defaults infra/features) → 2 (profile) →
     5 (cluster) → 6 (namespace). tenantDefaults is excluded (tenant-scoped)."""
     ns = tree.namespace(cluster, namespace)
