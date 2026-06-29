@@ -107,3 +107,63 @@ def test_d2_no_default_tenant_skips():
     membership = Membership(tenant_ids=["diku"], default_tenant=None,
                             consortia=[], dataset=None)
     assert check_default_tenant("c", "ns", membership) == []
+
+
+from validators.d4_consortia import check_consortia_block
+
+
+def _tree_with_types(types):
+    return _FakeTree({tid: {"type": t} for tid, t in types.items()})
+
+
+def test_d4_central_tenant_without_block_fails():
+    tree = _tree_with_types({"cs00000int": "consortia-central"})
+    membership = Membership(tenant_ids=["cs00000int"], default_tenant="cs00000int",
+                            consortia=[], dataset=None)
+    vs = check_consortia_block(tree, "c", "ns", membership)
+    assert len(vs) == 1
+    assert vs[0].rule == "D.4"
+    assert "cs00000int" in vs[0].message
+    assert "no consortia" in vs[0].message
+
+
+def test_d4_member_not_in_tenant_set_fails():
+    tree = _tree_with_types({"cs00000int": "consortia-central",
+                             "m1": "consortia-member"})
+    membership = Membership(tenant_ids=["cs00000int"], default_tenant="cs00000int",
+                            consortia=[{"central": "cs00000int", "members": ["m1"]}],
+                            dataset=None)
+    vs = check_consortia_block(tree, "c", "ns", membership)
+    assert len(vs) == 1
+    assert "m1" in vs[0].message
+    assert "not in the namespace" in vs[0].message
+
+
+def test_d4_member_wrong_type_fails():
+    tree = _tree_with_types({"cs00000int": "consortia-central",
+                             "m1": "standard"})
+    membership = Membership(tenant_ids=["cs00000int", "m1"], default_tenant="cs00000int",
+                            consortia=[{"central": "cs00000int", "members": ["m1"]}],
+                            dataset=None)
+    vs = check_consortia_block(tree, "c", "ns", membership)
+    assert len(vs) == 1
+    assert "consortia-member" in vs[0].message
+
+
+def test_d4_valid_central_and_members_ok():
+    tree = _tree_with_types({"cs00000int": "consortia-central",
+                             "m1": "consortia-member"})
+    membership = Membership(tenant_ids=["cs00000int", "m1"], default_tenant="cs00000int",
+                            consortia=[{"central": "cs00000int", "members": ["m1"]}],
+                            dataset=None)
+    assert check_consortia_block(tree, "c", "ns", membership) == []
+
+
+def test_d4_no_central_tenant_skips():
+    # sprint shape: members deployed, central named only in the block, not a tenant
+    tree = _tree_with_types({"university": "consortia-member",
+                             "consortium": "consortia-central"})
+    membership = Membership(tenant_ids=["university"], default_tenant="university",
+                            consortia=[{"central": "consortium", "members": ["university"]}],
+                            dataset=None)
+    assert check_consortia_block(tree, "c", "ns", membership) == []
