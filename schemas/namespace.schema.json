@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/namespace.schema.json",
+  "title": "kitfox-config namespace",
+  "description": "Validates clusters/{cluster}/namespaces/{ns}/namespace.yaml — the CreateNamespaceParameters surface (§2.6, §2.6b, Story A.2). additionalProperties:false rejects removed flags (consortia/isConsortiaSingleUi/hasSecureTenant/linkedData/loadReference/loadSample) and edge config.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "name", "platform"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "name": { "type": "string" },
+
+    "platform": {
+      "description": "Platform this namespace runs (§2.6, corrections #3/#4). Owned at the namespace level.",
+      "enum": ["OKAPI", "EUREKA"]
+    },
+    "configType": {
+      "description": "Selects platform/deployment-profiles/{configType}.yaml (§2.6, default development).",
+      "type": "string"
+    },
+    "platformBranch": {
+      "description": "Eureka: platform-lsp branch driving versions via FAR (§2.6).",
+      "type": "string"
+    },
+    "releaseType": {
+      "enum": ["SNAPSHOT", "SUNFLOWER", "TRILLIUM"]
+    },
+    "okapiVersion": {
+      "description": "Okapi clusters only (§2.6, §7).",
+      "type": "string"
+    },
+    "folioBranch": {
+      "description": "Okapi-only platform branch, accommodated for the Okapi pass (§7, Epic E).",
+      "type": "string"
+    },
+
+    "lifecycle": {
+      "description": "Namespace category + protection (§2.6; replaces the Constants.groovy category arrays §2c).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "category": { "enum": ["dev", "testing", "release", "tmp"] },
+        "protected": { "type": "boolean" }
+      }
+    },
+
+    "members": {
+      "description": "GitHub team names (+ pseudo tokens) for Rancher RBAC (§2.6).",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+
+    "infra": {
+      "description": "Topology OVERRIDE — built-in|aws flags only, never coordinates (§2.6, §0, NFR7).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pgType": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/topologyType" },
+        "kafkaType": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/topologyType" },
+        "opensearchType": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/topologyType" },
+        "s3Type": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/topologyType" },
+        "pgVersion": { "type": "string" }
+      }
+    },
+
+    "features": {
+      "description": "Boolean feature flags (§2.6). additionalProperties:false rejects the removed flags (consortia/isConsortiaSingleUi/hasSecureTenant/linkedData/loadReference/loadSample/dataset) — correction #2.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rwSplit": { "type": "boolean" },
+        "rtr": { "type": "boolean" },
+        "ecsCCL": { "type": "boolean" },
+        "scNative": { "type": "boolean" },
+        "greenmail": { "type": "boolean" },
+        "mockServer": { "type": "boolean" }
+      }
+    },
+
+    "configExtensions": {
+      "description": "Feature overlays applied in list order; each maps to platform/feature-overlays/<name>.yaml (§2.2b, §2.6).",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+
+    "consortia": {
+      "description": "Consortium membership; required when a consortia-central tenant is present (§2.6). Cross-level presence/consistency enforced by Epic D (D.4).",
+      "type": "array",
+      "items": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/consortiaEntry" }
+    },
+
+    "applications": {
+      "description": "Namespace-wide application exclusions (§2.6). Exclude-only; there is no include pool.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "exclude": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "tenants": {
+      "description": "Tenant membership by catalog id (§2.6). Mutually exclusive with dataset (enforced by D.5).",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "defaultTenant": {
+      "description": "Default tenant id; must be in tenants[] (cross-level check D.2).",
+      "type": "string"
+    },
+
+    "dataset": {
+      "description": "Dataset restore (§2.6, correction #8). Mutually exclusive with explicit tenants[] (enforced by D.5).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "snapshot": { "type": "string" },
+        "profile": { "type": "string" }
+      }
+    },
+
+    "operations": {
+      "description": "Operational MODIFIER defaults only (§5.3, NFR4). Run-control SELECTORS (type/namespaceOnly/dmSnapshot) are pipeline-only and rejected by additionalProperties:false.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "uiBuild": { "type": "boolean" },
+        "runSanityCheck": { "type": "boolean" },
+        "skipReindex": { "type": "boolean" },
+        "setBaseUrl": { "type": "boolean" },
+        "entitlementApproach": { "enum": ["STATE", "CREATE"] }
+      }
+    },
+
+    "podPlacement": {
+      "description": "Namespace-wide pod placement (§2.6; replaces the quality-gate nodeSelector/tolerations branch).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nodeSelector": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "tolerations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "key": { "type": "string" },
+              "operator": { "type": "string" },
+              "value": { "type": "string" },
+              "effect": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "modules": {
+      "description": "Per-module config overrides for this namespace (§2.6, §2.6b).",
+      "type": "object",
+      "additionalProperties": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/moduleOverride" }
+    }
+  }
+}

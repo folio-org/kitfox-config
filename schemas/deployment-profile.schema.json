@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/deployment-profile.schema.json",
+  "title": "kitfox-config deployment profile",
+  "description": "Validates platform/deployment-profiles/{configType}.yaml — named compute base layers selected by configType (§2.2, Story A.7). Deployment shape, not feature toggles.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "configType"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "configType": { "type": "string" },
+    "defaults": {
+      "description": "Default compute envelope applied to every module (§2.2).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "replicaCount": { "type": "integer" },
+        "resources": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/resources" },
+        "autoscaling": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/autoscaling" }
+      }
+    },
+    "moduleClassOverrides": {
+      "description": "Per-module-class compute overrides (e.g. mgr-* are heavier) (§2.2).",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "replicaCount": { "type": "integer" },
+          "resources": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/resources" },
+          "autoscaling": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/autoscaling" }
+        }
+      }
+    },
+    "ui": {
+      "description": "Stripes UI tunables for this profile (§2.2, §12e-2).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "idleSessionWarningSeconds": { "type": "integer" },
+        "maxUnpagedResourceCount": { "type": "integer" },
+        "rtr": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "idleSessionTTL": { "type": "string" },
+            "idleModalTTL": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

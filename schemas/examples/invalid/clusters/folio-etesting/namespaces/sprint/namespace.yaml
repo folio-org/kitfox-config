@@ -1,0 +1,10 @@
+# BROKEN: uses the REMOVED flag `features.linkedData` (correction #2). It must be
+# expressed as an app exclusion, not a namespace flag — schema must reject it.
+schemaVersion: 1
+name: sprint
+platform: EUREKA
+features:
+  rwSplit: false
+  linkedData: true
+tenants: [diku]
+defaultTenant: diku

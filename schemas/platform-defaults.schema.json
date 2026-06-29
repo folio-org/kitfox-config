@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/platform-defaults.schema.json",
+  "title": "kitfox-config platform defaults",
+  "description": "Validates platform/defaults.yaml — repo-wide defaults, the lowest-precedence layer (§2.1, Story A.7). additionalProperties:false rejects the removed flags (consortia/isConsortiaSingleUi/hasSecureTenant/linkedData/loadReference/loadSample at this scope) per correction #2.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "infra": {
+      "description": "Default infra topology (§2.1). Topology flags only; pgVersion is a name, not a coordinate.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pgType": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/topologyType" },
+        "pgVersion": { "type": "string" },
+        "kafkaType": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/topologyType" },
+        "opensearchType": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/topologyType" },
+        "s3Type": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/topologyType" }
+      }
+    },
+    "features": {
+      "description": "Repo-wide feature defaults (§2.1). Only rwSplit/rtr/ecsCCL/scNative — the removed flags are rejected.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rwSplit": { "type": "boolean" },
+        "rtr": { "type": "boolean" },
+        "ecsCCL": { "type": "boolean" },
+        "scNative": { "type": "boolean" }
+      }
+    },
+    "tenantDefaults": {
+      "description": "Default tenant identity + install + integration config (§2.1).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/tenantType" },
+        "secure": { "type": "boolean" },
+        "install": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "loadReference": { "type": "boolean" },
+            "loadSample": { "type": "boolean" },
+            "ignoreErrors": { "type": "boolean" },
+            "async": { "type": "boolean" },
+            "reinstall": { "type": "boolean" },
+            "simulate": { "type": "boolean" },
+            "purgeOnRollback": { "type": "boolean" }
+          }
+        },
+        "config": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kb": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "url": { "type": "string" },
+                "customerId": { "type": "string" },
+                "apiKeyRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" }
+              }
+            },
+            "worldcat": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "profileId": { "type": "string" },
+                "credentialsRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/tenant-catalog.schema.json",
+  "title": "kitfox-config tenant catalog",
+  "description": "Validates platform/tenant-catalog.yaml — canonical tenant identity keyed by id (§2.4, Story A.4). Identity only: no apps/branding/smtp and no plaintext password (NFR1).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "tenants"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "tenants": {
+      "description": "Map of tenant id -> identity.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "name", "adminUser"],
+        "properties": {
+          "type": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/tenantType" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "code": {
+            "description": "ECS short code (§2.4).",
+            "type": "string"
+          },
+          "adminUser": {
+            "description": "Admin identity. Username only; optional passwordRef. No plaintext password (NFR1).",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["username"],
+            "properties": {
+              "username": { "type": "string" },
+              "passwordRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

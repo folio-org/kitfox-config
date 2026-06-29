@@ -1,0 +1,16 @@
+# §2.2b platform/feature-overlays/secure-tenant.yaml
+# ${secureTenantId} is a pipeline value-substitution placeholder (string value).
+schemaVersion: 1
+name: secure-tenant
+
+modules:
+  mod-circulation-bff:
+    extraEnvVars:
+      - { name: SECURE_TENANT_ID, value: "${secureTenantId}" }
+  mod-requests-mediated:
+    extraEnvVars:
+      - { name: SECURE_TENANT_ID, value: "${secureTenantId}" }
+  edge-patron:
+    extraEnvVars:
+      - { name: SECURE_TENANT_ID, value: "${secureTenantId}" }
+      - { name: SECURE_REQUESTS_FEATURE_ENABLED, value: "true" }

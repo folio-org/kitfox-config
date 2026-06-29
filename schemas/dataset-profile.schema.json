@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/dataset-profile.schema.json",
+  "title": "kitfox-config dataset profile",
+  "description": "Validates platform/dataset-profiles/{name}.yaml — snapshot tenant structure + restore sizing (§2.4b, Story A.5). The defaultTenant must be a member of tenants[]; that intra-file check is enforced by the validator (JSON Schema core cannot express cross-property containment).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "name", "tenants"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "name": { "type": "string" },
+    "dbName": {
+      "description": "Restored DB name (§2.4b; = BUGFEST_SNAPSHOT_DBNAME).",
+      "type": "string"
+    },
+    "infra": {
+      "description": "Restore sizing (§2.4b). NOTE: this is instance sizing, not topology — distinct from namespace.infra.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pgInstanceType": { "type": "string" }
+      }
+    },
+    "moduleReplicas": {
+      "description": "Dataset pod scale-out per module (§2.4b).",
+      "type": "object",
+      "additionalProperties": { "type": "integer" }
+    },
+    "defaultTenant": {
+      "description": "The snapshot's default tenant; must be a member of tenants[] (validator intra-file check, A.5).",
+      "type": "string"
+    },
+    "tenants": {
+      "description": "Catalog ids present in the snapshot (§2.4b).",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "consortia": {
+      "description": "Consortium membership for the dataset (same shape as namespace consortia, §2.4b).",
+      "type": "array",
+      "items": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/consortiaEntry" }
+    }
+  }
+}

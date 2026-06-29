@@ -1,0 +1,19 @@
+# Editor directories and files
+.vscode
+.idea
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+
+
+# AI tools directories
+.serena/
+.codemie/
+.claude/
+.agents/skills/

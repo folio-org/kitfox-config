@@ -1,0 +1,7 @@
+# BROKEN: defaultTenant is not a member of tenants[] (§2.4b, A.5 intra-file check).
+schemaVersion: 1
+name: bugfest
+defaultTenant: nonexistent-tenant
+tenants:
+  - fs09000000
+  - fs09000002

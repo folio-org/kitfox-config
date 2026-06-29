@@ -1,0 +1,10 @@
+# BROKEN: `operations.type` is a pipeline-only run-control SELECTOR, not config
+# (§5.3, NFR4, correction #25). operations may carry MODIFIERS only — schema rejects it.
+schemaVersion: 1
+name: snapshot
+platform: EUREKA
+tenants: [diku]
+defaultTenant: diku
+operations:
+  uiBuild: true
+  type: full

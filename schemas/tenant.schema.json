@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/tenant.schema.json",
+  "title": "kitfox-config tenant override",
+  "description": "Validates clusters/{cluster}/namespaces/{ns}/tenants/{tenantId}.yaml — per-namespace deployment deviations only (§2.7, Story A.3). Identity (type/name/description) is catalog-resolved and rejected here; every secret is a *Ref (NFR1).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "tenantId"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "tenantId": {
+      "description": "Must be in the namespace tenants[] and the catalog (§2.7).",
+      "type": "string"
+    },
+    "secure": {
+      "description": "Per-deployment secure flag (§2.7, §4). Orthogonal to tenant type.",
+      "type": "boolean"
+    },
+    "adminUser": {
+      "description": "Optional admin override. Username comes from the catalog; only an optional passwordRef is allowed (§2.7, NFR1).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "passwordRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" }
+      }
+    },
+    "applications": {
+      "description": "Per-tenant application exclusions, unioned with type-default + namespace (§2.7, §3).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "exclude": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "index": {
+      "description": "Search index rebuild config (§6).",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string" },
+          "recreate": { "type": "boolean" },
+          "waitComplete": { "type": "boolean" }
+        }
+      }
+    },
+    "install": {
+      "description": "Install request param deviations (§2.7, §8). All defaults live in tenantDefaults.install.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "loadReference": { "type": "boolean" },
+        "loadSample": { "type": "boolean" },
+        "ignoreErrors": { "type": "boolean" },
+        "async": { "type": "boolean" },
+        "reinstall": { "type": "boolean" },
+        "simulate": { "type": "boolean" },
+        "purgeOnRollback": { "type": "boolean" }
+      }
+    },
+    "config": {
+      "description": "Okapi/integration config (§2.7, §7) — credential-free. Secrets are *Ref only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kb": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "url": { "type": "string" },
+            "customerId": { "type": "string" },
+            "apiKeyRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" }
+          }
+        },
+        "worldcat": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "profileId": { "type": "string" },
+            "credentialsRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" }
+          }
+        },
+        "smtp": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "host": { "type": "string" },
+            "port": { "type": "integer" },
+            "from": { "type": "string" },
+            "credentialsRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" }
+          }
+        },
+        "ldp": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "dbHost": { "type": "string" },
+            "dbUserPasswordRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" },
+            "adminDbUserPasswordRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" },
+            "configDbUserPasswordRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" },
+            "sqconfigRepoTokenRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" }
+          }
+        }
+      }
+    },
+    "ui": {
+      "description": "UI sub-block (§2.7, §11e-h).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "branch": { "type": "string" },
+        "add": { "type": "array", "items": { "type": "string" } },
+        "remove": { "type": "array", "items": { "type": "string" } },
+        "branding": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "logo": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "src": { "type": "string" },
+                "alt": { "type": "string" }
+              }
+            },
+            "favicon": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "src": { "type": "string" },
+                "alt": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

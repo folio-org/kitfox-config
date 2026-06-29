@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/edge-modules.schema.json",
+  "title": "kitfox-config edge modules",
+  "description": "Validates platform/edge-modules.yaml — the edge service account + per-module capabilities, the only real edge config (§2.4c, Story A.6). Credential-free: institutionalUsers require a passwordRef (correction #24, NFR1).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "edgeAdmin", "modules"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "edgeAdmin": {
+      "description": "Edge service account created per tenant (§2.4c). Username identity; optional passwordRef.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["username"],
+      "properties": {
+        "username": { "type": "string" },
+        "passwordRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" }
+      }
+    },
+    "modules": {
+      "description": "Per-edge-module permission requirements (§2.4c). Eureka uses capabilities/capabilitySets; Okapi uses permissions.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "capabilities": { "type": "array", "items": { "type": "string" } },
+          "capabilitySets": { "type": "array", "items": { "type": "string" } },
+          "permissions": { "type": "array", "items": { "type": "string" } },
+          "institutionalUsers": {
+            "description": "Optional dev/institutional edge users (§2.4c, correction #24). Each requires a passwordRef — no plaintext (NFR1).",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["tenant", "username", "passwordRef"],
+              "properties": {
+                "tenant": { "type": "string" },
+                "username": { "type": "string" },
+                "passwordRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

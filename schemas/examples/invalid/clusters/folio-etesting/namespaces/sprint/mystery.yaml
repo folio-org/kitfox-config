@@ -1,0 +1,4 @@
+# BROKEN: a YAML file at a path that maps to no schema (an unexpected/generated
+# artifact). The gate must fail rather than pass silently (NFR8, A.9).
+schemaVersion: 1
+something: unexpected

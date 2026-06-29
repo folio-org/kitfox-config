@@ -1,0 +1,23 @@
+# §2.2 platform/deployment-profiles/development.yaml
+schemaVersion: 1
+configType: development
+
+defaults:
+  replicaCount: 1
+  resources:
+    requests: { memory: 256Mi }
+    limits:   { memory: 384Mi }
+  autoscaling:
+    enabled: false
+
+moduleClassOverrides:
+  mgr:
+    resources:
+      limits: { memory: 2Gi }
+
+ui:
+  idleSessionWarningSeconds: 60
+  maxUnpagedResourceCount: 2000
+  rtr:
+    idleSessionTTL: "1h"
+    idleModalTTL: "30s"

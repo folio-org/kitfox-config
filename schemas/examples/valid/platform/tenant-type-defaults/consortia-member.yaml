@@ -1,0 +1,9 @@
+# §2.8 platform/tenant-type-defaults/consortia-member.yaml
+schemaVersion: 1
+type: consortia-member
+
+applications:
+  exclude:
+    - app-requests-mediated-ui
+    - app-consortia-manager
+    - app-linked-data

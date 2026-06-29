@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/tenant-type-default.schema.json",
+  "title": "kitfox-config tenant-type default",
+  "description": "Validates platform/tenant-type-defaults/{type}.yaml — per-type default application exclusions, authored once per type (§2.8, Story A.7).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "type"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "type": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/tenantType" },
+    "applications": {
+      "description": "Default exclusions for this tenant type (§2.8).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "exclude": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

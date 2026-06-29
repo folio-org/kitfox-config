@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/module-roles.schema.json",
+  "title": "kitfox-config module roles",
+  "description": "Validates platform/module-roles.yaml — behaviour-driving module lists, config not code (§2.3, Story A.7).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "readWriteModules": {
+      "description": "Backends that receive integrations.db.hostReader when rwSplit is enabled (§2.3).",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "systemUserModules": {
+      "description": "Modules requiring a dedicated system user provisioned at tenant init (§2.3).",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "eurekaModules": {
+      "description": "EUREKA_MODULES list (§1 layout, §2.3).",
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

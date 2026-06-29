@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/tenant-type-ruleset.schema.json",
+  "title": "kitfox-config tenant-type ruleset",
+  "description": "Validates platform/tenant-type-ruleset.yaml — application -> allowed tenant types/flags, the rule source for the PR-time validator (§4, Story A.8). This schema validates the rule file's SHAPE; Epic D applies the rules to resolved tenants.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "default", "rules"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "default": {
+      "description": "Default rule for any app not listed (§4).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowedTypes", "requireSecure"],
+      "properties": {
+        "allowedTypes": {
+          "type": "array",
+          "items": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/tenantType" }
+        },
+        "requireSecure": { "type": "boolean" }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["applications", "allowedTypes"],
+        "properties": {
+          "applications": { "type": "array", "items": { "type": "string" } },
+          "allowedTypes": {
+            "type": "array",
+            "items": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/tenantType" }
+          },
+          "requireSecure": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}
