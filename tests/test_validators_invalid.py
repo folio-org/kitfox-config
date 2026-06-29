@@ -167,3 +167,67 @@ def test_d4_no_central_tenant_skips():
                             consortia=[{"central": "consortium", "members": ["university"]}],
                             dataset=None)
     assert check_consortia_block(tree, "c", "ns", membership) == []
+
+
+from dataclasses import dataclass
+
+from validators.d1_tenant_type import check_tenant_type_ruleset
+
+RULESET = {
+    "default": {"allowedTypes": ["standard", "consortia-member", "consortia-central"],
+                "requireSecure": False},
+    "rules": [
+        {"applications": ["app-consortia", "app-dcb"],
+         "allowedTypes": ["consortia-member", "consortia-central"], "requireSecure": False},
+        {"applications": ["app-requests-mediated-ui"],
+         "allowedTypes": ["consortia-central"], "requireSecure": True},
+    ],
+}
+
+
+@dataclass
+class _T:
+    tenantId: str
+    type: str
+    secure: bool
+    deployedApps: list
+
+
+@dataclass
+class _RN:
+    namespaceName: str
+    tenants: list
+
+
+def test_d1_standard_deploying_consortia_app_fails():
+    rn = _RN("ns", [_T("diku", "standard", False, ["app-consortia", "app-fqm"])])
+    vs = check_tenant_type_ruleset(rn, RULESET, "c", "ns")
+    assert len(vs) == 1
+    assert vs[0].rule == "D.1"
+    assert "diku" in vs[0].message
+    assert "app-consortia" in vs[0].message
+    assert "consortia-member" in vs[0].message  # message lists allowed types
+
+
+def test_d1_member_with_consortia_app_ok():
+    rn = _RN("ns", [_T("university", "consortia-member", True,
+                       ["app-consortia", "app-fqm"])])
+    assert check_tenant_type_ruleset(rn, RULESET, "c", "ns") == []
+
+
+def test_d1_require_secure_violation():
+    rn = _RN("ns", [_T("consortium", "consortia-central", False,
+                       ["app-requests-mediated-ui"])])
+    vs = check_tenant_type_ruleset(rn, RULESET, "c", "ns")
+    assert len(vs) == 1
+    assert "secure" in vs[0].message.lower()
+
+
+def test_d1_default_rule_allows_unlisted_app():
+    rn = _RN("ns", [_T("diku", "standard", False, ["app-acquisitions"])])
+    assert check_tenant_type_ruleset(rn, RULESET, "c", "ns") == []
+
+
+def test_d1_no_deployed_apps_skips():
+    rn = _RN("ns", [_T("diku", "standard", False, None)])
+    assert check_tenant_type_ruleset(rn, RULESET, "c", "ns") == []
