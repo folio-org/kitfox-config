@@ -39,7 +39,7 @@ These are the exact rules the code must encode. Citations are to `design-artifac
 
 **Deployed-app set + cascade (§3, §5.2/§5.3, B.8):** `available = required+optional app NAMES from platform-descriptor.json (for the branch)`. `deployed = available − UNION(excludes)`. The resolver surfaces, per excluded app, its **UI module names** (from the app descriptor's `uiModules`) so the pipeline can later run the UI-module cascade — cascade *execution* is Epic F. No `modules.exclude` config surface is introduced. App descriptors are matched by **name** ignoring version (names-not-versions).
 
-**Gap #5 (§2.1 notes, task brief):** `tenantDefaults.config.kb` applies to a tenant only when `mod-kb-ebsco-java` is present; `tenantDefaults.config.worldcat` only when `mod-copycat` is present. "Present" = the module appears in the union of the tenant's deployed apps' `modules`. (In the reference tree both live in `app-platform-complete`, which is in the descriptor's `required` set, so both apply for sprint.)
+**Gap #5 (§2.1 notes, task brief):** `tenantDefaults.config.kb` applies to a tenant only when `mod-kb-ebsco-java` is present; `tenantDefaults.config.worldcat` only when `mod-copycat` is present. "Present" = the module appears in the union of the tenant's deployed apps' `modules`. **Verified reference behavior:** `mod-copycat` lives in `app-platform-complete` (descriptor `required` set) so `config.worldcat` is **kept** for sprint tenants; `mod-kb-ebsco-java` lives only in `app-eholdings`, which is **not** in the descriptor available set, so it is never present for sprint → `config.kb` is **dropped** (including a tenant override's `config.kb.apiKeyRef`, since the KB module isn't deployed).
 
 **module-roles / rwSplit (§2.3, §6, B.10):** load `platform/module-roles.yaml`. When `features.rwSplit` is true, mark each module named in `readWriteModules` to receive `integrations.db.hostReader` (set the flag `true` — mark only; the reader **coordinate** is injected by the pipeline from TF output at deploy, topology-not-coordinates). When false, no module is flagged.
 
@@ -62,7 +62,7 @@ These are the exact rules the code must encode. Citations are to `design-artifac
 - `clusters/folio-etesting/namespaces/bugfest/namespace.yaml`: `dataset: {snapshot: bugfest-2025-r1-snapshot, profile: bugfest}`, NO `tenants[]`, `configType: performance`.
 - `platform/dataset-profiles/bugfest.yaml`: `defaultTenant: fs09000000`, `tenants: [fs09000000, fs09000002, fs09000003, cs00000int, cs00000int_0001]`, `dbName: folio`, `infra.pgInstanceType: db.r6g.xlarge`, `moduleReplicas: {mod-inventory-storage: 4, mod-search: 4}`, `consortia: [{central: cs00000int, name: Consortium, members: [cs00000int_0001]}]`.
 - `platform-lsp/platform-descriptor.json`: `applications.required` = `[app-platform-minimal, app-platform-complete]`; `applications.optional` includes `app-consortia, app-dcb, app-fqm, app-linked-data, app-consortia-manager, ...` (each `{name, version}`).
-- `platform-lsp/local-dev/appDescriptors/*.json`: each has `modules` and `uiModules` lists of `{name, version, id}`. `app-platform-complete-3.3.0.json` contains both `mod-kb-ebsco-java` and `mod-copycat`.
+- `platform-lsp/local-dev/appDescriptors/*.json`: each has `modules` and `uiModules` lists of `{name, version, id}`. `app-platform-complete` (`-3.3.0.json`) contains `mod-copycat` (but NOT `mod-kb-ebsco-java`); `mod-kb-ebsco-java` is only in `app-eholdings` (`-1.0.0.json`), which is NOT in the descriptor available set.
 
 **Resolver-input data sources (injected, descriptor stand-in):**
 - Available app names: `platform-lsp/platform-descriptor.json` → names of `applications.required` + `applications.optional`.
@@ -534,10 +534,13 @@ def test_ui_modules_for_excluded_apps(platform_descriptor, app_descriptors_dir):
 
 def test_module_present_in_deployed_apps(platform_descriptor, app_descriptors_dir):
     idx = AppIndex.load(platform_descriptor, app_descriptors_dir)
-    # app-platform-complete is in the descriptor required set and carries both modules
-    present = idx.modules_of(["app-platform-complete"])
-    assert "mod-kb-ebsco-java" in present
-    assert "mod-copycat" in present
+    # mod-copycat lives in app-platform-complete (the descriptor's required set).
+    complete = idx.modules_of(["app-platform-complete"])
+    assert "mod-copycat" in complete
+    assert "mod-kb-ebsco-java" not in complete
+    # mod-kb-ebsco-java lives only in app-eholdings, which has a descriptor file
+    # even though it is NOT in the platform-descriptor available set.
+    assert "mod-kb-ebsco-java" in idx.modules_of(["app-eholdings"])
 
 
 def test_missing_app_descriptor_is_tolerated(platform_descriptor, app_descriptors_dir):
@@ -721,15 +724,17 @@ def test_membership_from_dataset(config_root):
     assert m.dataset["moduleReplicas"]["mod-search"] == 4
 
 
-def test_gap5_keeps_config_when_module_present(config_root, platform_descriptor,
-                                               app_descriptors_dir):
+def test_gap5_keeps_worldcat_drops_kb_for_sprint(config_root, platform_descriptor,
+                                                 app_descriptors_dir):
     tree = load_tree(config_root)
     idx = _idx(platform_descriptor, app_descriptors_dir)
     t = resolve_tenant(tree, "folio-etesting", "sprint", "diku",
                        namespace_exclude=[], app_index=idx)
-    # app-platform-complete (required) carries mod-kb-ebsco-java + mod-copycat
-    assert "kb" in t["config"]
+    # mod-copycat is in app-platform-complete (required) -> worldcat kept.
     assert "worldcat" in t["config"]
+    # mod-kb-ebsco-java lives only in app-eholdings (not in the available set)
+    # -> KB module never deployed for sprint -> config.kb dropped.
+    assert "kb" not in t["config"]
 
 
 def test_gap5_drops_config_when_module_absent(config_root, platform_descriptor,
