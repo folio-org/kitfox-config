@@ -6,7 +6,22 @@ import shutil
 
 import yaml
 
+from validators import run_tree
 from validators.core import Violation
+
+
+def _copy_tree(src, dst):
+    shutil.copytree(src / "platform", dst / "platform")
+    shutil.copytree(src / "clusters", dst / "clusters")
+    return dst
+
+
+def _rules_tripped(results):
+    return sorted({v.rule for vs in results.values() for v in vs})
+
+
+def _violations(results):
+    return [v for vs in results.values() for v in vs]
 
 
 def test_violation_str_names_rule_file_entity():
@@ -252,3 +267,73 @@ def test_gap8_sunflower_with_overlay_ok():
 def test_gap8_non_sunflower_ok():
     ns_doc = {"releaseType": "SNAPSHOT", "configExtensions": []}
     assert check_release_type_sunflower("c", "ns", ns_doc) == []
+
+
+def test_invalid_d1_standard_tenant_deploys_consortia_app(config_root, app_index, tmp_path):
+    """Remove app-consortia from the standard type-default → diku (standard) deploys
+    it → D.1 only."""
+    dst = _copy_tree(config_root, tmp_path / "cfg")
+    f = dst / "platform/tenant-type-defaults/standard.yaml"
+    doc = yaml.safe_load(f.read_text())
+    doc["applications"]["exclude"] = [
+        a for a in doc["applications"]["exclude"] if a != "app-consortia"
+    ]
+    f.write_text(yaml.safe_dump(doc))
+
+    results = run_tree(dst, app_index)
+    assert _rules_tripped(results) == ["D.1"]
+    msgs = [v.message for v in _violations(results)]
+    assert any("diku" in m and "app-consortia" in m for m in msgs)
+
+
+def test_invalid_d2_default_tenant_not_in_tenants(config_root, app_index, tmp_path):
+    dst = _copy_tree(config_root, tmp_path / "cfg")
+    f = dst / "clusters/folio-etesting/namespaces/sprint/namespace.yaml"
+    doc = yaml.safe_load(f.read_text())
+    doc["defaultTenant"] = "zzz"
+    f.write_text(yaml.safe_dump(doc))
+
+    results = run_tree(dst, app_index)
+    assert _rules_tripped(results) == ["D.2"]
+    assert any("zzz" in v.message for v in _violations(results))
+
+
+def test_invalid_d3_tenant_absent_from_catalog(config_root, app_index, tmp_path):
+    """Add an unknown id to sprint.tenants → D.3 (and D.1 is skipped, not crashed)."""
+    dst = _copy_tree(config_root, tmp_path / "cfg")
+    f = dst / "clusters/folio-etesting/namespaces/sprint/namespace.yaml"
+    doc = yaml.safe_load(f.read_text())
+    doc["tenants"] = doc["tenants"] + ["ghost"]
+    f.write_text(yaml.safe_dump(doc))
+
+    results = run_tree(dst, app_index)
+    assert _rules_tripped(results) == ["D.3"]
+    assert any(v.entity == "ghost" for v in _violations(results))
+
+
+def test_invalid_d4_central_tenant_without_block(config_root, app_index, tmp_path):
+    """Deploy central `consortium` in sprint but drop the consortia block → D.4."""
+    dst = _copy_tree(config_root, tmp_path / "cfg")
+    f = dst / "clusters/folio-etesting/namespaces/sprint/namespace.yaml"
+    doc = yaml.safe_load(f.read_text())
+    doc["tenants"] = doc["tenants"] + ["consortium"]
+    doc.pop("consortia", None)
+    f.write_text(yaml.safe_dump(doc))
+
+    results = run_tree(dst, app_index)
+    assert _rules_tripped(results) == ["D.4"]
+    assert any("consortium" in v.message and "no consortia" in v.message
+               for v in _violations(results))
+
+
+def test_invalid_d5_dataset_and_explicit_tenants(config_root, app_index, tmp_path):
+    """bugfest already has dataset.profile; add an explicit tenants[] → D.5."""
+    dst = _copy_tree(config_root, tmp_path / "cfg")
+    f = dst / "clusters/folio-etesting/namespaces/bugfest/namespace.yaml"
+    doc = yaml.safe_load(f.read_text())
+    doc["tenants"] = ["fs09000000"]
+    f.write_text(yaml.safe_dump(doc))
+
+    results = run_tree(dst, app_index)
+    assert _rules_tripped(results) == ["D.5"]
+    assert any("both" in v.message for v in _violations(results))
