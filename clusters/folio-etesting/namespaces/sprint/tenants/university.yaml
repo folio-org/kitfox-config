@@ -1,0 +1,50 @@
+# clusters/folio-etesting/namespaces/sprint/tenants/university.yaml — per-namespace deviations only (§2.7)
+# diku and college need no override file — identity comes from the catalog + namespace list.
+schemaVersion: 1
+
+tenantId: university
+secure: true
+
+applications:
+  exclude:
+    - app-fqm
+
+index:
+  - type: instance
+    recreate: true
+    waitComplete: true
+  - type: authority
+    recreate: false
+    waitComplete: false
+
+install:
+  loadSample: false
+
+config:
+  kb:
+    apiKeyRef: secretsmanager://folio/etesting/sprint/university/kb-api-key
+  smtp:
+    host: smtp.ci.folio.org
+    port: 587
+    from: noreply@ci.folio.org
+    credentialsRef: secretsmanager://folio/etesting/sprint/smtp
+  ldp:
+    dbHost: ldp.ci.folio.org
+    dbUserPasswordRef:        secretsmanager://folio/etesting/sprint/ldp/db
+    adminDbUserPasswordRef:   secretsmanager://folio/etesting/sprint/ldp/admin
+    configDbUserPasswordRef:  secretsmanager://folio/etesting/sprint/ldp/config
+    sqconfigRepoTokenRef:     secretsmanager://folio/etesting/sprint/ldp/sqconfig
+
+ui:
+  enabled: true
+  branch: snapshot
+  add:
+    - folio_inn-reach
+  remove:
+    - folio_developer
+  branding:
+    logo:
+      src: ./tenant-assets/university-logo.png
+      alt: "University Library"
+    favicon:
+      src: ./tenant-assets/university-favicon.png

@@ -1,0 +1,46 @@
+# clusters/folio-etesting/namespaces/bugfest/namespace.yaml — dataset namespace (§2.4b, §2.6)
+# Dataset-driven: the tenant set, defaultTenant, sizing, and consortia come from the
+# bugfest dataset profile. MUTUALLY EXCLUSIVE with an explicit tenants[] (no list here).
+schemaVersion: 1
+
+name: bugfest
+
+platform: EUREKA
+configType: performance
+platformBranch: snapshot
+releaseType: SUNFLOWER
+
+lifecycle:
+  category: release
+  protected: true
+
+members:
+  - thunderjet
+  - folijet
+  - spitfire
+  - Eureka
+
+infra:
+  pgType: aws
+  kafkaType: aws
+  opensearchType: aws
+  s3Type: aws
+
+features:
+  rwSplit: false
+  ecsCCL: true
+
+configExtensions:
+  - sunflower
+  - consortia-single-ui
+
+dataset:
+  snapshot: bugfest-2025-r1-snapshot
+  profile: bugfest
+
+operations:
+  uiBuild: true
+  runSanityCheck: false
+  skipReindex: false
+  entitlementApproach: STATE
+  setBaseUrl: true

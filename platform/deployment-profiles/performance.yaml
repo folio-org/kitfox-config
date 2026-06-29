@@ -1,0 +1,19 @@
+# platform/deployment-profiles/performance.yaml — compute base selected by configType (§2.2)
+schemaVersion: 1
+configType: performance
+
+defaults:
+  replicaCount: 2
+  resources:
+    requests: { memory: 1Gi }
+    limits:   { memory: 2Gi }
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 75
+
+moduleClassOverrides:
+  mgr:
+    resources:
+      limits: { memory: 3Gi }

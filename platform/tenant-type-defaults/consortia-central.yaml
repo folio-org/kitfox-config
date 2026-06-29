@@ -1,0 +1,8 @@
+# platform/tenant-type-defaults/consortia-central.yaml — default exclusions per type (§2.8)
+schemaVersion: 1
+type: consortia-central
+
+applications:
+  # The central tenant may run everything; app-requests-mediated-ui is still
+  # gated by the `secure` flag at validation (§4).
+  exclude: []

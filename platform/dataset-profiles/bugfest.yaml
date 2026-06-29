@@ -1,0 +1,23 @@
+# platform/dataset-profiles/bugfest.yaml — snapshot tenant structure + restore sizing (§2.4b)
+schemaVersion: 1
+name: bugfest
+
+dbName: folio
+infra:
+  pgInstanceType: db.r6g.xlarge
+moduleReplicas:
+  mod-inventory-storage: 4
+  mod-search: 4
+
+defaultTenant: fs09000000
+tenants:
+  - fs09000000
+  - fs09000002
+  - fs09000003
+  - cs00000int
+  - cs00000int_0001
+
+consortia:
+  - central: cs00000int
+    name: Consortium
+    members: [cs00000int_0001]

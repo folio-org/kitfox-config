@@ -1,0 +1,23 @@
+# platform/deployment-profiles/testing.yaml — compute base selected by configType (§2.2)
+schemaVersion: 1
+configType: testing
+
+defaults:
+  replicaCount: 1
+  resources:
+    requests: { memory: 384Mi }
+    limits:   { memory: 512Mi }
+  autoscaling:
+    enabled: false
+
+moduleClassOverrides:
+  mgr:
+    resources:
+      limits: { memory: 2Gi }
+
+ui:
+  idleSessionWarningSeconds: 60
+  maxUnpagedResourceCount: 2000
+  rtr:
+    idleSessionTTL: "1h"
+    idleModalTTL: "30s"
