@@ -59,6 +59,8 @@ def apply_overlays(
     if rtr and PRESENCE_RTR not in names:
         names.append(PRESENCE_RTR)
 
+    # Overlays touching the same module's extraEnvVars REPLACE (not merge) per the
+    # §3 named-list rule — keep overlay module sets disjoint to avoid dropping env.
     for name in names:
         overlay = overlays.get(name)
         if overlay is None:

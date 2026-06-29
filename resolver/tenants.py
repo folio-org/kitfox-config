@@ -28,7 +28,7 @@ WORLDCAT_MODULE = "mod-copycat"
 @dataclass
 class Membership:
     tenant_ids: list[str]
-    default_tenant: str
+    default_tenant: str | None
     consortia: list[dict[str, Any]]
     dataset: dict[str, Any] | None   # the resolved dataset profile, or None
 
@@ -37,7 +37,8 @@ def tenant_membership(tree: ConfigTree, cluster: str, namespace: str) -> Members
     ns = tree.namespace(cluster, namespace)
     dataset_ref = ns.get("dataset")
     if dataset_ref and dataset_ref.get("profile"):
-        profile = tree.dataset_profiles[dataset_ref["profile"]]
+        # deepcopy so callers never mutate the shared loaded dataset profile.
+        profile = copy.deepcopy(tree.dataset_profiles[dataset_ref["profile"]])
         return Membership(
             tenant_ids=list(profile.get("tenants", [])),
             default_tenant=profile.get("defaultTenant"),
@@ -53,7 +54,7 @@ def tenant_membership(tree: ConfigTree, cluster: str, namespace: str) -> Members
     return Membership(
         tenant_ids=list(ns.get("tenants", [])),
         default_tenant=ns.get("defaultTenant"),
-        consortia=ns.get("consortia", []),
+        consortia=copy.deepcopy(ns.get("consortia", [])),
         dataset=None,
     )
 

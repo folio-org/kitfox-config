@@ -77,5 +77,7 @@ def load_tree(root: Path) -> ConfigTree:
         feature_overlays=_load_dir(platform / "feature-overlays", "name"),
         dataset_profiles=_load_dir(platform / "dataset-profiles", "name"),
         module_roles=_load_yaml(platform / "module-roles.yaml"),
+        # Not a merge layer; pre-loaded so the Epic D cross-level validators can
+        # consume it from the same tree (B.1 readiness gap #1).
         tenant_ruleset=_load_yaml(platform / "tenant-type-ruleset.yaml"),
     )

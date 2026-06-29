@@ -23,7 +23,11 @@ def _namespace_base(
     5 (cluster) → 6 (namespace). tenantDefaults is excluded (tenant-scoped)."""
     ns = tree.namespace(cluster, namespace)
     config_type = ns.get("configType", "development")
-    profile = tree.deployment_profiles.get(config_type, {})
+    if config_type not in tree.deployment_profiles:
+        raise KeyError(
+            f"configType '{config_type}' has no platform/deployment-profiles file"
+        )
+    profile = tree.deployment_profiles[config_type]
     defaults = {k: v for k, v in tree.defaults.items() if k != "tenantDefaults"}
     cluster_doc = tree.cluster(cluster)
 
