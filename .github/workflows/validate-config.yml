@@ -9,6 +9,8 @@ on:
       - "clusters/**"
       - "schemas/**"
       - "scripts/**"
+      - "validators/**"
+      - "tests/fixtures/**"
       - "requirements.txt"
   push:
     branches: [main]
@@ -27,3 +29,5 @@ jobs:
         run: python scripts/validate_config.py
       - name: Schema smoke test (valid pass, broken fail)
         run: python scripts/smoke_test.py
+      - name: Cross-level validators (D.1-D.5 + gap#8)
+        run: python scripts/validate_cross_level.py
