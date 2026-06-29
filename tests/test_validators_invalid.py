@@ -231,3 +231,24 @@ def test_d1_default_rule_allows_unlisted_app():
 def test_d1_no_deployed_apps_skips():
     rn = _RN("ns", [_T("diku", "standard", False, None)])
     assert check_tenant_type_ruleset(rn, RULESET, "c", "ns") == []
+
+
+from validators.d8_release_type import check_release_type_sunflower
+
+
+def test_gap8_sunflower_without_overlay_fails():
+    ns_doc = {"releaseType": "SUNFLOWER", "configExtensions": ["consortia-single-ui"]}
+    vs = check_release_type_sunflower("c", "ns", ns_doc)
+    assert len(vs) == 1
+    assert vs[0].rule == "gap#8"
+    assert "sunflower" in vs[0].message
+
+
+def test_gap8_sunflower_with_overlay_ok():
+    ns_doc = {"releaseType": "SUNFLOWER", "configExtensions": ["sunflower"]}
+    assert check_release_type_sunflower("c", "ns", ns_doc) == []
+
+
+def test_gap8_non_sunflower_ok():
+    ns_doc = {"releaseType": "SNAPSHOT", "configExtensions": []}
+    assert check_release_type_sunflower("c", "ns", ns_doc) == []
