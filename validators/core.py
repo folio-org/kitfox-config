@@ -7,7 +7,6 @@ resolver. Only D.1 uses the resolver (deployed-app set)."""
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 from resolver.loader import ConfigTree
 from resolver.tenants import Membership
