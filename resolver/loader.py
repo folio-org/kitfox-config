@@ -3,7 +3,7 @@ hierarchy (§5.1); discovery is readdir, not parsing."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -30,7 +30,6 @@ class ConfigTree:
     dataset_profiles: dict[str, dict[str, Any]]       # name -> profile
     module_roles: dict[str, Any]
     tenant_ruleset: dict[str, Any]
-    _cluster_dir: Path = field(default=None)
 
     def cluster(self, cluster: str) -> dict[str, Any]:
         return _load_yaml(self.root / "clusters" / cluster / "cluster.yaml")
