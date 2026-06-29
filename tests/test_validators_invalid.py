@@ -45,3 +45,40 @@ def test_d5_neither_fails():
     vs = check_dataset_xor_tenants("c", "x", ns_doc)
     assert len(vs) == 1
     assert "neither" in vs[0].message
+
+
+from resolver.tenants import Membership
+
+from validators.d3_catalog import check_tenants_in_catalog
+
+
+class _FakeTree:
+    def __init__(self, catalog):
+        self.catalog = catalog
+
+
+def test_d3_unknown_tenant_id_fails():
+    tree = _FakeTree({"diku": {"type": "standard"}})
+    membership = Membership(tenant_ids=["diku", "ghost"], default_tenant="diku",
+                            consortia=[], dataset=None)
+    vs = check_tenants_in_catalog(tree, "c", "ns", membership)
+    assert len(vs) == 1
+    assert vs[0].rule == "D.3"
+    assert vs[0].entity == "ghost"
+    assert "tenant-catalog.yaml" in vs[0].message
+
+
+def test_d3_consortia_member_checked_against_catalog():
+    tree = _FakeTree({"consortium": {"type": "consortia-central"}})
+    membership = Membership(tenant_ids=["consortium"], default_tenant="consortium",
+                            consortia=[{"central": "consortium", "members": ["missing"]}],
+                            dataset=None)
+    vs = check_tenants_in_catalog(tree, "c", "ns", membership)
+    assert [v.entity for v in vs] == ["missing"]
+
+
+def test_d3_all_known_ok():
+    tree = _FakeTree({"diku": {"type": "standard"}})
+    membership = Membership(tenant_ids=["diku"], default_tenant="diku",
+                            consortia=[], dataset=None)
+    assert check_tenants_in_catalog(tree, "c", "ns", membership) == []
