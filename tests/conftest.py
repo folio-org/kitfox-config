@@ -27,3 +27,17 @@ def platform_descriptor() -> Path:
 @pytest.fixture
 def app_descriptors_dir() -> Path:
     return APP_DESCRIPTORS
+
+
+@pytest.fixture
+def app_index():
+    """AppIndex from the sibling platform-lsp descriptor when present (local dev),
+    else the vendored fixture (CI, where platform-lsp is not checked out)."""
+    from resolver.apps import AppIndex
+
+    descriptor = PLATFORM_DESCRIPTOR
+    app_descriptors = APP_DESCRIPTORS
+    if not descriptor.exists():
+        descriptor = CONFIG_ROOT / "tests" / "fixtures" / "platform-descriptor.json"
+        app_descriptors = CONFIG_ROOT / "tests" / "fixtures" / "appDescriptors"
+    return AppIndex.load(descriptor, app_descriptors)
