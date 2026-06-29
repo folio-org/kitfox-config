@@ -82,3 +82,28 @@ def test_d3_all_known_ok():
     membership = Membership(tenant_ids=["diku"], default_tenant="diku",
                             consortia=[], dataset=None)
     assert check_tenants_in_catalog(tree, "c", "ns", membership) == []
+
+
+from validators.d2_default_tenant import check_default_tenant
+
+
+def test_d2_default_not_in_tenants_fails():
+    membership = Membership(tenant_ids=["diku", "university"], default_tenant="zzz",
+                            consortia=[], dataset=None)
+    vs = check_default_tenant("c", "ns", membership)
+    assert len(vs) == 1
+    assert vs[0].rule == "D.2"
+    assert "zzz" in vs[0].message
+    assert "diku" in vs[0].message  # message lists the valid set
+
+
+def test_d2_default_in_tenants_ok():
+    membership = Membership(tenant_ids=["diku"], default_tenant="diku",
+                            consortia=[], dataset=None)
+    assert check_default_tenant("c", "ns", membership) == []
+
+
+def test_d2_no_default_tenant_skips():
+    membership = Membership(tenant_ids=["diku"], default_tenant=None,
+                            consortia=[], dataset=None)
+    assert check_default_tenant("c", "ns", membership) == []
