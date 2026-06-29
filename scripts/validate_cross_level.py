@@ -31,6 +31,8 @@ WORKSPACE = Path(__file__).parent.parent.parent  # unresolved: follows symlinks
 SIBLING_DESCRIPTOR = WORKSPACE / "platform-lsp" / "platform-descriptor.json"
 SIBLING_APP_DESCRIPTORS = WORKSPACE / "platform-lsp" / "local-dev" / "appDescriptors"
 VENDORED_DESCRIPTOR = REPO_ROOT / "tests" / "fixtures" / "platform-descriptor.json"
+# Intentionally may not exist: AppIndex.load tolerates a missing dir, and the
+# Epic D checks need only app NAMES from the descriptor, not per-app modules.
 VENDORED_APP_DESCRIPTORS = REPO_ROOT / "tests" / "fixtures" / "appDescriptors"
 
 
@@ -44,8 +46,11 @@ def _resolve_descriptor(arg: Path | None) -> tuple[Path, Path]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="kitfox-config cross-level validator")
-    parser.add_argument("--descriptor", type=Path, default=None)
-    parser.add_argument("--app-descriptors", type=Path, default=None)
+    parser.add_argument("--descriptor", type=Path, default=None,
+                        help="platform-descriptor.json (default: sibling platform-lsp, "
+                             "else the vendored tests/fixtures copy)")
+    parser.add_argument("--app-descriptors", type=Path, default=None,
+                        help="app-descriptors dir (optional; only app names are used)")
     args = parser.parse_args()
 
     descriptor, app_descriptors = _resolve_descriptor(args.descriptor)
