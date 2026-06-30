@@ -57,7 +57,10 @@ def test_secure_tenant_overlay_absent_when_no_secure(config_root, platform_descr
     uni.write_text(yaml.safe_dump(doc))
     idx = AppIndex.load(platform_descriptor, app_descriptors_dir)
     resolved = resolve_namespace(dst, "folio-etesting", "sprint", idx)
-    assert "mod-patron" not in resolved.modules
+    # The profile supplies mod-patron as a base module; with no secure tenant the
+    # secure-tenant overlay must NOT inject SECURE_TENANT_ID.
+    env = resolved.modules.get("mod-patron", {}).get("extraEnvVars", [])
+    assert all(e.get("name") != "SECURE_TENANT_ID" for e in env)
 
 
 def test_rwsplit_false_marks_nothing(sprint):
