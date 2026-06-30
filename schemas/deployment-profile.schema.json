@@ -48,6 +48,11 @@
           }
         }
       }
+    },
+    "modules": {
+      "description": "Full per-module Helm values owned by this profile (D1=B, ADR-0009). Keyed by module name; permissive value shape to accept the folio-helm-v2 values structure. Credential-free by convention: secrets are k8s existingSecret references, never plaintext.",
+      "type": "object",
+      "additionalProperties": { "type": "object" }
     }
   }
 }

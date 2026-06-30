@@ -1,0 +1,6 @@
+# BROKEN: a module value must be an object (Helm values map), not a scalar.
+# Schema must reject this under modules.additionalProperties.type=object.
+schemaVersion: 1
+configType: testing
+modules:
+  mod-users: "not-an-object"
