@@ -17,3 +17,14 @@ __pycache__/
 .codemie/
 .claude/
 .agents/skills/
+_bmad/
+_bmad-output/
+.opencode/
+.kiro/
+.agents/
+.github/agents/
+skills-lock.json
+docs/superpowers/
+
+#Local
+local-dev/
