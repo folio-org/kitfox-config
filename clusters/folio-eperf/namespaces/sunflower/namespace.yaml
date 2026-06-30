@@ -1,0 +1,39 @@
+# clusters/folio-eperf/namespaces/sunflower/namespace.yaml — CreateNamespaceParameters surface (§2.6)
+schemaVersion: 1
+
+name: sunflower
+
+platform: EUREKA
+configType: release
+platformBranch: sunflower
+releaseType: SUNFLOWER
+
+lifecycle:
+  category: release
+  protected: false
+
+members: []
+
+infra:
+  pgType: aws
+  kafkaType: aws
+  s3Type: aws
+
+configExtensions:
+  - sunflower
+  - consortia-single-ui
+
+consortia:
+  - central: consortium
+    name: Consortium
+    members: [university, college]
+
+tenants: [diku, consortium, university, college]
+defaultTenant: diku
+
+operations:
+  uiBuild: true
+  runSanityCheck: false
+  skipReindex: false
+  entitlementApproach: STATE
+  setBaseUrl: true

@@ -1,0 +1,26 @@
+# clusters/folio-tmp/namespaces/test/namespace.yaml — CreateNamespaceParameters surface (§2.6)
+# Throwaway tmp namespace: single-tenant, no consortia.
+schemaVersion: 1
+
+name: test
+
+platform: EUREKA
+configType: development
+platformBranch: snapshot
+releaseType: SNAPSHOT
+
+lifecycle:
+  category: tmp
+  protected: false
+
+members: []
+
+tenants: [diku]
+defaultTenant: diku
+
+operations:
+  uiBuild: false
+  runSanityCheck: false
+  skipReindex: false
+  entitlementApproach: STATE
+  setBaseUrl: true
