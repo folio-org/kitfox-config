@@ -19,5 +19,6 @@ works, [../../resolver-reference.md](../../resolver-reference.md).
 | [0006](0006-credential-free.md) | Credential-free — every secret is a `*Ref` or convention-derived | §0, corrections #14/#22/#24 |
 | [0007](0007-edge-mostly-derived.md) | Edge config is mostly derived; only the account + capabilities are config | §2.4c, §5.3, correction #22 |
 | [0008](0008-tenant-type-ruleset.md) | Tenant-type ruleset with `secure` as an orthogonal boolean | §4 model note |
+| [0009](0009-deployment-profile-owns-module-values.md) | Deployment profile owns the full per-module Helm values (supersedes the §2.6b static-config→chart-values rule) | §2.2, §2.6b, D1=B |
 
 All ADRs are **Accepted** and reflected in the Iteration-1 code.

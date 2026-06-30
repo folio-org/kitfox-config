@@ -112,11 +112,12 @@ index configuration) → **UI** (Stripes build) → **edge** (edge module epheme
 
 ## Per-module config → three homes (folioHelm switch split, §2.6b)
 
-The `folioHelm.groovy:~353-523` `switch(moduleName)` block splits by nature (correction #7):
+The `folioHelm.groovy:~353-523` `switch(moduleName)` block splits by nature (correction #7).
+See ADR-0009 — the deployment profile owns the full per-module values.
 
 | Legacy branch | New home | Layer | Status |
 |---------------|----------|-------|--------|
-| Static module env (`spring.cache.type`, default probes/JVM/resources) | `folio-helm-v2` chart `values.yaml` | Helm | pipeline-only (chart default) |
+| Static module env (`spring.cache.type`, default probes/JVM/resources, ingress/service shape, integrations) | `platform/deployment-profiles/{configType}.yaml: modules.<name>` (per ADR-0009) | Helm | config |
 | `mod-fqm-manager` cache timeout (`:406`) | `namespace.modules.mod-fqm-manager.extraEnvVars` | Helm | config |
 | `mod-scheduler` timer (`:428`), `mod-bulk-operations` multipart (`:433`) | `namespace.modules.<m>` | Helm | config |
 | `mod-data-export`/`mod-marc-migrations` initContainer+PVC (`:447-461`) | `namespace.modules.<m>.{initContainer,volumeClaims}` | Helm | config |

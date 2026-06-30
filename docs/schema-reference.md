@@ -170,6 +170,7 @@ field must be a `*Ref` — a plaintext value fails.
 |-------|------|-------|
 | `defaults.{replicaCount,resources,autoscaling}` | mixed | Default compute envelope |
 | `moduleClassOverrides.<class>.{replicaCount,resources,autoscaling}` | mixed | e.g. `mgr` is heavier |
+| `modules.<name>` | permissive object | Full per-module Helm values for this profile (ADR-0009). Transferred verbatim from `pipelines-shared-library/resources/helm/<configType>.yaml`; consumed as the base module layer before `moduleClassOverrides`, feature overlays, and `namespace.modules.<name>` overrides. Credential-free — only `existingSecret` references, never plaintext values. |
 | `ui.{idleSessionWarningSeconds,maxUnpagedResourceCount,rtr.idleSessionTTL,rtr.idleModalTTL}` | mixed | Stripes tunables |
 
 ## `feature-overlay` — `platform/feature-overlays/<name>.yaml` (§2.2b)
