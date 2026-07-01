@@ -15,7 +15,7 @@ moduleClassOverrides:
     resources:
       limits: { memory: 2Gi }
 
-ui:
+uiDefaults:
   idleSessionWarningSeconds: 60
   maxUnpagedResourceCount: 2000
   rtr:

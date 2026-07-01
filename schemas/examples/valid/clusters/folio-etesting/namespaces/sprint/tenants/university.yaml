@@ -33,17 +33,3 @@ config:
     adminDbUserPasswordRef:   secretsmanager://folio/etesting/sprint/ldp/admin
     configDbUserPasswordRef:  secretsmanager://folio/etesting/sprint/ldp/config
     sqconfigRepoTokenRef:     secretsmanager://folio/etesting/sprint/ldp/sqconfig
-
-ui:
-  enabled: true
-  branch: snapshot
-  add:
-    - folio_inn-reach
-  remove:
-    - folio_developer
-  branding:
-    logo:
-      src: ./tenant-assets/university-logo.png
-      alt: "University Library"
-    favicon:
-      src: ./tenant-assets/university-favicon.png
