@@ -59,10 +59,9 @@ def resolve_namespace(
 
     features = merged.get("features", {})
 
-    # Overlays (layer 7) — namespace-scoped modules/ui.
+    # Overlays (layer 7) — namespace-scoped modules only.
     overlaid = apply_overlays(
-        base={"modules": copy.deepcopy(merged.get("modules", {})),
-              "ui": copy.deepcopy(merged.get("ui", {}))},
+        base={"modules": copy.deepcopy(merged.get("modules", {}))},
         config_extensions=merged.get("configExtensions", []),
         overlays=tree.feature_overlays,
         any_secure=any_secure,
@@ -70,7 +69,9 @@ def resolve_namespace(
         rtr=bool(features.get("rtr", False)),
     )
     modules = overlaid.get("modules", {})
-    ui = overlaid.get("ui", {})
+    # Build-wide Stripes tunables (from the deployment profile) — every tenant's
+    # UI build inherits these. Distinct from per-tenant catalog `ui`.
+    ui_defaults = copy.deepcopy(merged.get("uiDefaults", {}))
 
     # Dataset moduleReplicas -> modules.<m>.replicaCount (§6 §12d).
     dataset = membership.dataset
@@ -136,7 +137,7 @@ def resolve_namespace(
         tenants=tenants,
         dataset=dataset_out,
         podPlacement=merged.get("podPlacement"),
-        ui=ui,
+        uiDefaults=ui_defaults,
     )
 
 

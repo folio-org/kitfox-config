@@ -89,6 +89,8 @@ def resolve_tenant(
     if "code" in identity:
         tenant["code"] = identity["code"]
     tenant["adminUser"] = copy.deepcopy(identity.get("adminUser", {}))
+    if "ui" in identity:
+        tenant["ui"] = copy.deepcopy(identity["ui"])
 
     # Layer 8 — override (merge install/config; set secure; carry index/ui; adminUser.passwordRef).
     if override:
@@ -101,7 +103,7 @@ def resolve_tenant(
         if "index" in override:
             tenant["index"] = copy.deepcopy(override["index"])
         if "ui" in override:
-            tenant["ui"] = copy.deepcopy(override["ui"])
+            tenant["ui"] = deep_merge(tenant.get("ui", {}), copy.deepcopy(override["ui"]))
         if "adminUser" in override:
             tenant["adminUser"] = deep_merge(tenant["adminUser"], override["adminUser"])
 
