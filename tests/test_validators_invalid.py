@@ -287,8 +287,9 @@ def test_invalid_d1_standard_tenant_deploys_consortia_app(config_root, app_index
 
 
 def test_invalid_d2_default_tenant_not_in_tenants(config_root, app_index, tmp_path):
+    # Use thunderjet which has an explicit tenants list; sprint is now dataset-based
     dst = _copy_tree(config_root, tmp_path / "cfg")
-    f = dst / "clusters/folio-etesting/namespaces/sprint/namespace.yaml"
+    f = dst / "clusters/folio-edev/namespaces/thunderjet/namespace.yaml"
     doc = yaml.safe_load(f.read_text())
     doc["defaultTenant"] = "zzz"
     f.write_text(yaml.safe_dump(doc))
@@ -299,9 +300,10 @@ def test_invalid_d2_default_tenant_not_in_tenants(config_root, app_index, tmp_pa
 
 
 def test_invalid_d3_tenant_absent_from_catalog(config_root, app_index, tmp_path):
-    """Add an unknown id to sprint.tenants → D.3 (and D.1 is skipped, not crashed)."""
+    """Add an unknown id to thunderjet.tenants → D.3 (and D.1 is skipped, not crashed).
+    Uses thunderjet (explicit tenants) because sprint is now dataset-based."""
     dst = _copy_tree(config_root, tmp_path / "cfg")
-    f = dst / "clusters/folio-etesting/namespaces/sprint/namespace.yaml"
+    f = dst / "clusters/folio-edev/namespaces/thunderjet/namespace.yaml"
     doc = yaml.safe_load(f.read_text())
     doc["tenants"] = doc["tenants"] + ["ghost"]
     f.write_text(yaml.safe_dump(doc))
@@ -312,11 +314,12 @@ def test_invalid_d3_tenant_absent_from_catalog(config_root, app_index, tmp_path)
 
 
 def test_invalid_d4_central_tenant_without_block(config_root, app_index, tmp_path):
-    """Deploy central `consortium` in sprint but drop the consortia block → D.4."""
+    """Drop the consortia block from thunderjet while consortium remains in tenants → D.4.
+    Uses thunderjet (explicit tenants) because sprint is now dataset-based."""
     dst = _copy_tree(config_root, tmp_path / "cfg")
-    f = dst / "clusters/folio-etesting/namespaces/sprint/namespace.yaml"
+    f = dst / "clusters/folio-edev/namespaces/thunderjet/namespace.yaml"
     doc = yaml.safe_load(f.read_text())
-    doc["tenants"] = doc["tenants"] + ["consortium"]
+    # thunderjet already has consortium in tenants; just remove the consortia block
     doc.pop("consortia", None)
     f.write_text(yaml.safe_dump(doc))
 

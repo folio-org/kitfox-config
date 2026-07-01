@@ -1,7 +1,8 @@
 """E2E: folio-etesting/sprint (§3 resolution end-to-end).
-Asserts: tenant set; university deployed apps exclude app-fqm + consortia-member
-type-default exclusions; secure-tenant overlay applied iff a tenant is secure;
-defaultTenant = diku."""
+sprint uses the bugfest dataset profile; tenants are derived from that dataset
+(fs09000000, fs09000002, fs09000003, cs00000int, cs00000int_0001).
+Asserts: tenant set; consortia-member type-default exclusions on the dataset member
+tenant; no SECURE_TENANT_ID injection (no secure tenant in dataset); defaultTenant."""
 
 import pytest
 
@@ -20,47 +21,31 @@ def _tenant(resolved, tid):
 
 
 def test_tenant_set_and_default(sprint):
-    assert [t.tenantId for t in sprint.tenants] == ["diku", "university", "college"]
-    assert sprint.defaultTenant == "diku"
+    # sprint resolves tenants from the bugfest dataset profile, not explicit list
+    assert [t.tenantId for t in sprint.tenants] == [
+        "fs09000000", "fs09000002", "fs09000003", "cs00000int", "cs00000int_0001"
+    ]
+    assert sprint.defaultTenant == "fs09000000"
 
 
-def test_university_excludes_fqm_and_type_defaults(sprint):
-    uni = _tenant(sprint, "university")
-    excl = uni.applications["exclude"]
-    assert "app-fqm" in excl                       # tenant override
+def test_member_tenant_type_defaults(sprint):
+    """cs00000int_0001 is the consortia-member from the bugfest dataset; verify
+    that consortia-member type-default exclusions are applied."""
+    member = _tenant(sprint, "cs00000int_0001")
+    excl = member.applications["exclude"]
     assert "app-consortia-manager" in excl         # consortia-member type default
     assert "app-linked-data" in excl               # consortia-member type default
     assert "app-requests-mediated-ui" in excl      # consortia-member type default
     # deployed set excludes them
-    assert "app-fqm" not in uni.deployedApps
-    assert "app-consortia-manager" not in uni.deployedApps
+    assert "app-consortia-manager" not in member.deployedApps
 
 
-def test_secure_tenant_overlay_applied_when_secure_present(sprint):
-    # university is secure -> SECURE_TENANT_ID lands, substituted to 'university'
-    env = sprint.modules["mod-patron"]["extraEnvVars"]
-    val = next(e["value"] for e in env if e["name"] == "SECURE_TENANT_ID")
-    assert val == "university"
-
-
-def test_secure_tenant_overlay_absent_when_no_secure(config_root, platform_descriptor,
-                                                     app_descriptors_dir, tmp_path):
-    """Build a copy of the tree with university.secure removed → overlay must NOT apply."""
-    import shutil
-    import yaml
-    dst = tmp_path / "cfg"
-    shutil.copytree(config_root / "platform", dst / "platform")
-    shutil.copytree(config_root / "clusters", dst / "clusters")
-    uni = dst / "clusters/folio-etesting/namespaces/sprint/tenants/university.yaml"
-    doc = yaml.safe_load(uni.read_text())
-    doc["secure"] = False
-    uni.write_text(yaml.safe_dump(doc))
-    idx = AppIndex.load(platform_descriptor, app_descriptors_dir)
-    resolved = resolve_namespace(dst, "folio-etesting", "sprint", idx)
-    # The profile supplies mod-patron as a base module; with no secure tenant the
-    # secure-tenant overlay must NOT inject SECURE_TENANT_ID.
-    env = resolved.modules.get("mod-patron", {}).get("extraEnvVars", [])
-    assert all(e.get("name") != "SECURE_TENANT_ID" for e in env)
+def test_no_secure_tenant_in_dataset_sprint(sprint):
+    """Sprint tenants come from the bugfest dataset; none are marked secure,
+    so SECURE_TENANT_ID must not be injected into any module's extraEnvVars."""
+    for mod_cfg in sprint.modules.values():
+        env = mod_cfg.get("extraEnvVars", [])
+        assert all(e.get("name") != "SECURE_TENANT_ID" for e in env)
 
 
 def test_rwsplit_false_marks_nothing(sprint):
@@ -68,6 +53,7 @@ def test_rwsplit_false_marks_nothing(sprint):
 
 
 def test_excluded_app_ui_modules_surfaced(sprint):
-    uni = _tenant(sprint, "university")
+    # cs00000int_0001 is the dataset consortia-member with type-default exclusions
+    member = _tenant(sprint, "cs00000int_0001")
     # cascade input present for each excluded app (value may be [] if no descriptor)
-    assert set(uni.excludedAppsUiModules.keys()) == set(uni.applications["exclude"])
+    assert set(member.excludedAppsUiModules.keys()) == set(member.applications["exclude"])
