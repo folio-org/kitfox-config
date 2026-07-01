@@ -32,8 +32,8 @@
         }
       }
     },
-    "ui": {
-      "description": "Stripes UI tunables for this profile (§2.2, §12e-2).",
+    "uiDefaults": {
+      "description": "Build-wide Stripes UI tunables for this profile — inherited by every tenant's UI build (§2.2, §12e-2). NOT per-tenant ui (that is catalog identity).",
       "type": "object",
       "additionalProperties": false,
       "properties": {
