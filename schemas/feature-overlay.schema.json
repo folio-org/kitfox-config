@@ -13,14 +13,6 @@
       "description": "Per-module config the feature contributes (§2.2b).",
       "type": "object",
       "additionalProperties": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/moduleOverride" }
-    },
-    "ui": {
-      "description": "Declared UI values the build reads directly (§2.2b; e.g. consortiaSingleUx).",
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "consortiaSingleUx": { "type": "boolean" }
-      }
     }
   }
 }

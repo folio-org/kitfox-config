@@ -10,6 +10,3 @@ modules:
   mod-consortia-keycloak:
     extraEnvVars:
       - { name: SINGLE_TENANT_UX, value: "true" }
-
-ui:
-  consortiaSingleUx: true
