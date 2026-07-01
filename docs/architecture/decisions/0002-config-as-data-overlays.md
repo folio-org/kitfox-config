@@ -51,3 +51,8 @@ This is the Kustomize-"components" / Configuration-as-Data pattern. See
 - One coupling is kept as a light validator, not a branch: `releaseType: SUNFLOWER` should also
   list `sunflower` in `configExtensions` — enforced advisorily by gap#8
   ([validator-reference.md](../../validator-reference.md)).
+- `consortiaSingleUx` is **not** an overlay-declared value. It is per-tenant catalog
+  identity (`tenant-catalog.yaml`, centrals only); the `consortia-single-ui` overlay now
+  contributes only the backend `SINGLE_TENANT_UX` module env. "Has a UI bundle" is likewise
+  per-tenant catalog identity (`tenants.<id>.ui`), and the build-wide Stripes tunables live in
+  the namespace `uiDefaults` block sourced from the deployment profile.

@@ -97,14 +97,14 @@ index configuration) → **UI** (Stripes build) → **edge** (edge module epheme
 | `feature-overlays/secure-tenant.yaml` (presence-driven) | `SECURE_TENANT_ID` env via `folioHelm` switch (`:368-399`) | Helm | config (auto-selected from `secure: true`) |
 | `feature-overlays/rtr.yaml` | `setEnableRtr` → `LEGACY_TOKEN_TENANTS` (`folioHelm:421`) — **no overlay file existed** | Helm | config (overlay authored; F.4 wiring) |
 | `feature-overlays/sunflower.yaml` | `FolioRelease.fromPlatformBranch` SUNFLOWER (`DPR:18,26`) | Helm | config |
-| `ui.consortiaSingleUx` (overlay) + `isEcsBff` | central-tenant single bundle (`:228-231`); `isEcsBff = isConsortia && ecsCCL` (`:396`) | UI | derived |
+| tenant `ui.consortiaSingleUx` (catalog identity, centrals only) + `isEcsBff` | central-tenant single bundle (`:228-231`); `isEcsBff = isConsortia && ecsCCL` (`:396`) | UI | config (per-tenant) + derived |
 
 ### Removed namespace flags → derived/relocated
 
 | Legacy flag (`CreateNamespaceParameters`) | New home | Status |
 |-------------------------------------------|----------|--------|
 | `consortia` / `consortiaExtra` | presence of consortia-type tenants + `consortia:` blocks | derived |
-| `isConsortiaSingleUi` | `consortia-single-ui` overlay + `ui.consortiaSingleUx` | config + derived |
+| `isConsortiaSingleUi` | `consortia-single-ui` overlay (backend env) + central tenant `ui.consortiaSingleUx` in `tenant-catalog.yaml` | config (overlay + catalog identity) |
 | `hasSecureTenant` / `secureTenantId` | tenant `secure: true` → presence-driven overlay; `${secureTenantId}` substituted | derived |
 | `linkedData` | `app-linked-data` in/out of `applications.exclude`; `folio_ld-folio-wrapper` cleanup | config + derived |
 | `loadReference` / `loadSample` | `tenant.install.*` | config |

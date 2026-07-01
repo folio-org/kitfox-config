@@ -132,6 +132,7 @@ field must be a `*Ref` — a plaintext value fails.
 | `tenants.<id>.code` | string | Optional ECS short code |
 | `tenants.<id>.adminUser.username` | string | Required identity |
 | `tenants.<id>.adminUser.passwordRef` | `secretRef` | Optional; **no plaintext password** |
+| `tenants.<id>.ui` | object | Per-tenant UI identity — presence => UI bundle; `consortiaSingleUx` (centrals), `enabled/branch/add/remove/branding` |
 
 ## `dataset-profile` — `platform/dataset-profiles/<name>.yaml` (§2.4b)
 
@@ -171,7 +172,7 @@ field must be a `*Ref` — a plaintext value fails.
 | `defaults.{replicaCount,resources,autoscaling}` | mixed | Default compute envelope |
 | `moduleClassOverrides.<class>.{replicaCount,resources,autoscaling}` | mixed | e.g. `mgr` is heavier |
 | `modules.<name>` | permissive object | Full per-module Helm values for this profile (ADR-0009). Transferred verbatim from `pipelines-shared-library/resources/helm/<configType>.yaml`; consumed as the base module layer before `moduleClassOverrides`, feature overlays, and `namespace.modules.<name>` overrides. Credential-free — only `existingSecret` references, never plaintext values. |
-| `ui.{idleSessionWarningSeconds,maxUnpagedResourceCount,rtr.idleSessionTTL,rtr.idleModalTTL}` | mixed | Stripes tunables |
+| `uiDefaults.{idleSessionWarningSeconds,maxUnpagedResourceCount,rtr.idleSessionTTL,rtr.idleModalTTL}` | mixed | Stripes tunables |
 
 ## `feature-overlay` — `platform/feature-overlays/<name>.yaml` (§2.2b)
 
@@ -181,7 +182,6 @@ placeholders resolved by the pipeline/resolver.
 | Field | Type | Notes |
 |-------|------|-------|
 | `modules.<name>` | `moduleOverride` | Per-module config the feature contributes |
-| `ui.consortiaSingleUx` | boolean | Declared UI value read directly by the build |
 
 ## `edge-modules` — `platform/edge-modules.yaml` (§2.4c)
 

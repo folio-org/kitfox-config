@@ -38,7 +38,8 @@ Three nested scopes, plus a repo-wide `platform/` layer that all of them draw on
   Owns `platform` (OKAPI/EUREKA), `configType`, topology overrides, feature flags, overlays,
   app exclusions, member teams, lifecycle, operational modifier defaults, and its tenant set.
   Covers the bulk of the legacy `CreateNamespaceParameters` (§2.6).
-- **Tenant** — a FOLIO tenant. Its **identity** (type, name, code, admin username) lives once
+- **Tenant** — a FOLIO tenant. Its **identity** (type, name, code, admin username, and UI
+  identity — whether it has a UI bundle and, for centrals, `consortiaSingleUx`) lives once
   in `platform/tenant-catalog.yaml`; the namespace references it by id. A per-namespace
   `tenants/<id>.yaml` override exists **only** when the tenant deviates (§2.4, §2.7).
 

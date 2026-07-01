@@ -5,7 +5,7 @@ deployment profiles (D1=B / ADR-0009).
 For each profile name, load the sibling pipelines-shared-library helm values
 (a module->values map) and nest it under `modules:` in the existing
 platform/deployment-profiles/<name>.yaml, preserving that file's existing keys
-(schemaVersion, configType, defaults, moduleClassOverrides, ui).
+(schemaVersion, configType, defaults, moduleClassOverrides, uiDefaults).
 
 Sanitization: the source files are credential-free (existingSecret references
 only). This tool asserts that no plaintext secret value is present before
@@ -49,6 +49,10 @@ def main() -> int:
     for name in NAMES:
         helm_file = HELM_DIR / f"{name}.yaml"
         profile_file = PROFILE_DIR / f"{name}.yaml"
+        if not helm_file.exists():
+            print(f"SKIP {name}: no helm source at {helm_file}; "
+                  f"leaving {profile_file.name} as-is")
+            continue
         modules = yaml.safe_load(helm_file.read_text())
         if not isinstance(modules, dict):
             print(f"FAIL {name}: helm file is not a module map")
