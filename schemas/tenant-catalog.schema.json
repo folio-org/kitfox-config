@@ -32,6 +32,40 @@
               "username": { "type": "string" },
               "passwordRef": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/secretRef" }
             }
+          },
+          "ui": {
+            "description": "Per-tenant UI identity (§2.4, §2.7). Presence => this tenant gets a UI bundle. Deep-merged with the per-namespace tenant override ui at resolve time.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "consortiaSingleUx": { "type": "boolean" },
+              "enabled": { "type": "boolean" },
+              "branch": { "type": "string" },
+              "add": { "type": "array", "items": { "type": "string" } },
+              "remove": { "type": "array", "items": { "type": "string" } },
+              "branding": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "logo": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "src": { "type": "string" },
+                      "alt": { "type": "string" }
+                    }
+                  },
+                  "favicon": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "src": { "type": "string" },
+                      "alt": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
