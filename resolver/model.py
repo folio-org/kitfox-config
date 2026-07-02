@@ -4,7 +4,7 @@ and versions deliberately absent (filled by TF outputs / FAR at deploy)."""
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from typing import Any
 
 
@@ -46,7 +46,6 @@ class ResolvedNamespace:
     tenants: list[ResolvedTenant]
     dataset: dict[str, Any] | None = None
     podPlacement: dict[str, Any] | None = None
-    uiDefaults: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

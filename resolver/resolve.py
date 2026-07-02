@@ -69,8 +69,9 @@ def resolve_namespace(
         rtr=bool(features.get("rtr", False)),
     )
     modules = overlaid.get("modules", {})
-    # Build-wide Stripes tunables (from the deployment profile) — every tenant's
-    # UI build inherits these. Distinct from per-tenant catalog `ui`.
+    # Build-wide Stripes tunables (from the deployment profile). These are NOT
+    # emitted as a standalone namespace field — they are folded into each
+    # UI-having tenant's `ui` below (a tenant without a bundle stays ui=None).
     ui_defaults = copy.deepcopy(merged.get("uiDefaults", {}))
 
     # Dataset moduleReplicas -> modules.<m>.replicaCount (§6 §12d).
@@ -102,7 +103,10 @@ def resolve_namespace(
             applications=t.get("applications", {"exclude": []}),
             code=t.get("code"),
             index=t.get("index"),
-            ui=t.get("ui"),
+            # Fold build-wide uiDefaults into a tenant's ui ONLY if it has a
+            # bundle (catalog gave it a `ui`); members with no bundle stay None.
+            ui=(deep_merge(copy.deepcopy(ui_defaults), t["ui"])
+                if t.get("ui") is not None else None),
             deployedApps=t.get("deployedApps"),
             excludedAppsUiModules=t.get("excludedAppsUiModules"),
         )
@@ -137,7 +141,6 @@ def resolve_namespace(
         tenants=tenants,
         dataset=dataset_out,
         podPlacement=merged.get("podPlacement"),
-        uiDefaults=ui_defaults,
     )
 
 
