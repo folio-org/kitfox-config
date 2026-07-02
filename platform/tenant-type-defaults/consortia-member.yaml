@@ -1,0 +1,11 @@
+# platform/tenant-type-defaults/consortia-member.yaml — default exclusions per type (§2.8)
+schemaVersion: 1
+type: consortia-member
+
+applications:
+  # Non-central members get core consortia apps but not the manager app,
+  # the mediated UI, or linked-data.
+  exclude:
+    - app-requests-mediated-ui
+    - app-consortia-manager
+    - app-linked-data

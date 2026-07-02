@@ -1,0 +1,40 @@
+# §2.1 platform/defaults.yaml
+schemaVersion: 1
+
+infra:
+  pgType: built-in
+  pgVersion: "16.8"
+  kafkaType: built-in
+  opensearchType: aws
+  s3Type: built-in
+
+features:
+  rwSplit: false
+  rtr: false
+  ecsCCL: false
+  scNative: true
+
+uiDefaults:
+  idleSessionWarningSeconds: 60
+  maxUnpagedResourceCount: 2000
+  rtr:
+    idleSessionTTL: "1h"
+    idleModalTTL: "30s"
+
+tenantDefaults:
+  type: standard
+  secure: false
+  install:
+    loadReference: true
+    loadSample: true
+    ignoreErrors: true
+    async: true
+    reinstall: false
+    simulate: false
+    purgeOnRollback: false
+  config:
+    kb:
+      url: https://sandbox.ebsco.io
+      customerId: apidvcorp
+    worldcat:
+      profileId: f26df83c-aa25-40b6-876e-96852c3d4fd4

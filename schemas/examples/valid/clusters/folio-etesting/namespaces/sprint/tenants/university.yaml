@@ -1,0 +1,35 @@
+# §2.7 clusters/folio-etesting/namespaces/sprint/tenants/university.yaml
+schemaVersion: 1
+
+tenantId: university
+secure: true
+
+applications:
+  exclude:
+    - app-fqm
+
+index:
+  - type: instance
+    recreate: true
+    waitComplete: true
+  - type: authority
+    recreate: false
+    waitComplete: false
+
+install:
+  loadSample: false
+
+config:
+  kb:
+    apiKeyRef: secretsmanager://folio/etesting/sprint/university/kb-api-key
+  smtp:
+    host: smtp.ci.folio.org
+    port: 587
+    from: noreply@ci.folio.org
+    credentialsRef: secretsmanager://folio/etesting/sprint/smtp
+  ldp:
+    dbHost: ldp.ci.folio.org
+    dbUserPasswordRef:        secretsmanager://folio/etesting/sprint/ldp/db
+    adminDbUserPasswordRef:   secretsmanager://folio/etesting/sprint/ldp/admin
+    configDbUserPasswordRef:  secretsmanager://folio/etesting/sprint/ldp/config
+    sqconfigRepoTokenRef:     secretsmanager://folio/etesting/sprint/ldp/sqconfig

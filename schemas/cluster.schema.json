@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/cluster.schema.json",
+  "title": "kitfox-config cluster",
+  "description": "Validates clusters/{cluster}/cluster.yaml — pure infrastructure identity (§2.5, Story A.1). KISS/one-concept-per-entity: platform & configType live on the namespace, NOT here (correction #4, NFR2).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "name", "cloud", "registry", "dns", "endpoints", "superuser"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "name": { "type": "string" },
+    "cloud": {
+      "description": "Cloud placement (§2.5; replaces Constants AWS_REGION / AWS_EKS_VPC_NAME).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["region", "vpcName"],
+      "properties": {
+        "region": { "type": "string" },
+        "vpcName": { "type": "string" }
+      }
+    },
+    "registry": {
+      "description": "Container registry (§2.5; replaces Constants.ECR_FOLIO_REPOSITORY).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ecr"],
+      "properties": {
+        "ecr": { "type": "string" }
+      }
+    },
+    "dns": {
+      "description": "Root DNS for all generated domains (§2.5; replaces Constants.CI_ROOT_DOMAIN).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rootDomain"],
+      "properties": {
+        "rootDomain": { "type": "string" }
+      }
+    },
+    "endpoints": {
+      "description": "Shared, pre-provisioned, CI-wide endpoints — cluster identity, not per-namespace coordinates (§2.5).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rancherApiUrl", "eurekaRegistryUrl", "openSearchUrl", "farUrl"],
+      "properties": {
+        "rancherApiUrl": { "type": "string", "format": "uri" },
+        "eurekaRegistryUrl": { "type": "string", "format": "uri" },
+        "openSearchUrl": { "type": "string", "format": "uri" },
+        "farUrl": { "type": "string", "format": "uri" }
+      }
+    },
+    "superuser": {
+      "description": "Supertenant admin identity (§2.5, NFR1). Username only — the password is convention-derived, never in config.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["username"],
+      "properties": {
+        "username": { "type": "string" }
+      }
+    }
+  }
+}

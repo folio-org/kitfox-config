@@ -1,0 +1,19 @@
+# §2.4c platform/edge-modules.yaml (abbreviated capability lists)
+schemaVersion: 1
+
+edgeAdmin:
+  username: edge_admin
+
+modules:
+  edge-orders:
+    capabilitySets: [gobi.manage, ebsconet.manage, mosaic.manage, finance.manage]
+    permissions:    [gobi.all, ebsconet.all]
+  edge-patron:
+    capabilitySets: [patron.manage]
+    capabilities:   [users_collection.view, circulation_requests_item.view]
+    permissions:    [patron.all, users.collection.get, circulation.requests.item.get]
+  edge-oai-pmh:
+    capabilitySets: [oai-pmh.manage]
+    permissions:    [oai-pmh.all, user-tenants.collection.get]
+    institutionalUsers:
+      - { tenant: testoaipmh, username: test-user, passwordRef: secretsmanager://folio/edge/oai-pmh/test-user }

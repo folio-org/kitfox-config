@@ -1,0 +1,13 @@
+# §2.4 platform/tenant-catalog.yaml (abbreviated)
+schemaVersion: 1
+
+tenants:
+  diku:        { type: standard,          name: "Datalogisk Institut", adminUser: { username: diku_admin } }
+  university:  { type: consortia-member,  name: "University Library", code: um, adminUser: { username: university_admin } }
+  college:     { type: consortia-member,  name: "College Library",   code: cl, adminUser: { username: college_admin } }
+  consortium:  { type: consortia-central, name: "Consortium",        code: cs, adminUser: { username: ECSAdmin } }
+  fs09000000:  { type: standard,          name: "Frontside 0", adminUser: { username: folio } }
+  fs09000002:  { type: standard,          name: "Frontside 2", adminUser: { username: folio } }
+  fs09000003:  { type: standard,          name: "Frontside 3", adminUser: { username: folio } }
+  cs00000int:  { type: consortia-central, name: "Consortium (dataset)", adminUser: { username: ECSAdmin } }
+  cs00000int_0001: { type: consortia-member, name: "Member 0001", adminUser: { username: ECS0001Admin } }

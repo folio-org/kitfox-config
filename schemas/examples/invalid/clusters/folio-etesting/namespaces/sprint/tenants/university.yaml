@@ -1,0 +1,9 @@
+# BROKEN: plaintext secret. The KB API key must be a *Ref (apiKeyRef), never a
+# literal `apiKey` value (§2.7, NFR1). additionalProperties:false rejects `apiKey`.
+schemaVersion: 1
+tenantId: university
+secure: true
+config:
+  kb:
+    url: https://sandbox.ebsco.io
+    apiKey: "super-secret-plaintext-key"

@@ -1,0 +1,24 @@
+# platform/tenant-catalog.yaml — canonical tenant identity keyed by id (§2.4)
+# Identity only — no apps/branding/smtp, no plaintext password (NFR1).
+schemaVersion: 1
+
+tenants:
+  diku:        { type: standard,          name: "Datalogisk Institut", adminUser: { username: diku_admin }, ui: {} }
+  university:  { type: consortia-member,  name: "University Library", code: um, adminUser: { username: university_admin } }
+  college:     { type: consortia-member,  name: "College Library",   code: cl, adminUser: { username: college_admin } }
+  consortium:  { type: consortia-central, name: "Consortium",        code: cs, adminUser: { username: consortium_admin }, ui: { consortiaSingleUx: true } }
+  fs09000000:  { type: standard,          name: "Frontside 0", adminUser: { username: folio }, ui: {} }
+  fs09000002:  { type: standard,          name: "Frontside 2", adminUser: { username: folio-plus }, ui: {} }
+  fs09000003:  { type: standard,          name: "Frontside 3", adminUser: { username: folio-aqa }, ui: {} }
+  cs00000int:  { type: consortia-central, name: "Consortium (dataset)", adminUser: { username: ECSAdmin }, ui: { consortiaSingleUx: true } }
+  cs00000int_0001: { type: consortia-member, name: "Member 0001", adminUser: { username: ECS0001Admin } }
+  cs00000int_0002: { type: consortia-member, name: "Member 0002", adminUser: { username: ECS0002Admin } }
+  cs00000int_0003: { type: consortia-member, name: "Member 0003", adminUser: { username: ECS0003Admin } }
+  cs00000int_0004: { type: consortia-member, name: "Member 0004", adminUser: { username: ECS0004Admin } }
+  cs00000int_0005: { type: consortia-member, name: "Member 0005", adminUser: { username: ECS0005Admin } }
+  cs00000int_0006: { type: consortia-member, name: "Member 0006", adminUser: { username: ECS0006Admin } }
+  cs00000int_0007: { type: consortia-member, name: "Member 0007", adminUser: { username: ECS0007Admin } }
+  cs00000int_0008: { type: consortia-member, name: "Member 0008", adminUser: { username: ECS0008Admin } }
+  cs00000int_0009: { type: consortia-member, name: "Member 0009", adminUser: { username: ECS0009Admin } }
+  cs00000int_0010: { type: consortia-member, name: "Member 0010", adminUser: { username: ECS0010Admin } }
+  cs00000int_0011: { type: consortia-member, name: "Member 0011", adminUser: { username: ECS0011Admin } }

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/deployment-profile.schema.json",
+  "title": "kitfox-config deployment profile",
+  "description": "Validates platform/deployment-profiles/{configType}.yaml — named compute base layers selected by configType (§2.2, Story A.7). Deployment shape, not feature toggles.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "configType"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "configType": { "type": "string" },
+    "defaults": {
+      "description": "Default compute envelope applied to every module (§2.2).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "replicaCount": { "type": "integer" },
+        "resources": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/resources" },
+        "autoscaling": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/autoscaling" }
+      }
+    },
+    "modules": {
+      "description": "Full per-module Helm values owned by this profile (D1=B, ADR-0009). Keyed by module name; permissive value shape to accept the folio-helm-v2 values structure. Credential-free by convention: secrets are k8s existingSecret references, never plaintext.",
+      "type": "object",
+      "additionalProperties": { "type": "object" }
+    }
+  }
+}

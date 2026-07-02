@@ -1,0 +1,8 @@
+# platform/feature-overlays/sunflower.yaml — Sunflower release line tuning (§2.2b)
+schemaVersion: 1
+name: sunflower
+
+modules:
+  mgr-tenant-entitlements:
+    extraEnvVars:
+      - { name: VALIDATION_INTERFACE_COLLECTOR_MODE, value: "combined" }

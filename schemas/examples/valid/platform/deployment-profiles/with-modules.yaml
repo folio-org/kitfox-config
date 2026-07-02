@@ -1,0 +1,26 @@
+# §2.2 / ADR-0009 — deployment profile carrying full per-module Helm values.
+schemaVersion: 1
+configType: testing
+
+defaults:
+  replicaCount: 1
+  resources:
+    requests: { memory: 256Mi }
+
+modules:
+  mod-users:
+    replicaCount: 1
+    integrations:
+      okapi:
+        enabled: true
+        existingSecret: okapi-credentials
+    resources:
+      limits: { memory: 1024Mi }
+    extraJavaOpts:
+      - -XX:MaxRAMPercentage=85.0
+  edge-courses:
+    service:
+      type: NodePort
+    extraEnvVars:
+      - name: secure_store
+        value: Ephemeral

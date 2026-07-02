@@ -1,0 +1,10 @@
+# platform/feature-overlays/rtr.yaml — Refresh Token Rotation (§2.2b, correction #17)
+# Flag-driven: applied when features.rtr is true. Session TTLs are profile-level
+# (deployment-profiles: ui.rtr §2.2), not here.
+schemaVersion: 1
+name: rtr
+
+modules:
+  mod-authtoken:
+    extraEnvVars:
+      - { name: LEGACY_TOKEN_TENANTS, value: "" }

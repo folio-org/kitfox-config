@@ -1,0 +1,24 @@
+# clusters/folio-etesting/cluster.yaml — pure infrastructure identity (§2.5)
+# KISS: platform & configType live on the namespace, never here (NFR2).
+schemaVersion: 1
+
+name: folio-etesting
+
+cloud:
+  region: us-west-2
+  vpcName: folio-rancher-vpc
+
+registry:
+  ecr: 732722833398.dkr.ecr.us-west-2.amazonaws.com
+
+dns:
+  rootDomain: ci.folio.org
+
+endpoints:
+  rancherApiUrl:     https://rancher.ci.folio.org/v3
+  eurekaRegistryUrl: https://eureka-registry.ci.folio.org/
+  openSearchUrl:     https://vpc-folio-opensearch-yq77h7fbng7nq6esvgparhiida.us-west-2.es.amazonaws.com
+  farUrl:            https://far.ci.folio.org
+
+superuser:
+  username: admin

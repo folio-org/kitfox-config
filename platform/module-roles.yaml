@@ -1,0 +1,20 @@
+# platform/module-roles.yaml — module name → pipeline behavioural role (§2.3)
+schemaVersion: 1
+
+# Backends that receive integrations.db.hostReader when rwSplit is enabled.
+readWriteModules:
+  - mod-audit
+  - mod-authtoken
+  - mod-circulation-storage
+  - mod-data-import
+  - mod-di-converter-storage
+  - mod-inventory-storage
+  - mod-source-record-storage
+  - mod-users
+
+# Modules requiring a dedicated system user provisioned at tenant init.
+systemUserModules:
+  - mod-data-export-spring
+  - mod-search
+  - mod-consortia
+  - mod-pubsub

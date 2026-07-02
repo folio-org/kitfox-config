@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/feature-overlay.schema.json",
+  "title": "kitfox-config feature overlay",
+  "description": "Validates platform/feature-overlays/{name}.yaml — feature behaviors as declarative config-as-data overlays (§2.2b, Story A.7, NFR3). Module env values may carry ${...} substitution placeholders resolved by the pipeline.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "name"],
+  "properties": {
+    "schemaVersion": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/schemaVersion" },
+    "name": { "type": "string" },
+    "modules": {
+      "description": "Per-module config the feature contributes (§2.2b).",
+      "type": "object",
+      "additionalProperties": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/moduleOverride" }
+    }
+  }
+}

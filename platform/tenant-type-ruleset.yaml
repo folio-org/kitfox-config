@@ -1,0 +1,31 @@
+# platform/tenant-type-ruleset.yaml — application → allowed tenant types/flags (§4)
+# Shape validated here; Epic D applies the rules to resolved tenants.
+schemaVersion: 1
+
+default:
+  allowedTypes: [standard, consortia-member, consortia-central]
+  requireSecure: false
+
+rules:
+  - applications:
+      - app-consortia
+      - app-dcb
+      - app-requests-ecs
+      - app-requests-mediated
+    allowedTypes: [consortia-member, consortia-central]
+    requireSecure: false
+
+  - applications:
+      - app-consortia-manager
+    allowedTypes: [consortia-central]
+    requireSecure: false
+
+  - applications:
+      - app-linked-data
+    allowedTypes: [standard, consortia-central]
+    requireSecure: false
+
+  - applications:
+      - app-requests-mediated-ui
+    allowedTypes: [consortia-central]
+    requireSecure: true

@@ -1,0 +1,12 @@
+# platform/feature-overlays/split-files.yaml — mod-data-import split-files ingest (§2.2b)
+# Authors the env the legacy RancherNamespace:180 branch injected.
+schemaVersion: 1
+name: split-files
+
+modules:
+  mod-data-import:
+    extraEnvVars:
+      - { name: SPLIT_FILES_ENABLED, value: "true" }
+      - { name: DI_INITIALIZATION_STARTED_PARTITIONS, value: "8" }
+      - { name: DI_RAW_RECORDS_CHUNK_READ_PARTITIONS, value: "8" }
+      - { name: ASYNC_PROCESSOR_MAX_WORKERS_COUNT, value: "8" }

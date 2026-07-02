@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kitfox-config.folio.org/schemas/_defs.schema.json",
+  "title": "kitfox-config shared definitions",
+  "description": "Shared $defs reused by every kitfox-config schema. Implements §0 (credential-free, topology-not-coordinates) and Epic A Story A.0.",
+  "$defs": {
+    "schemaVersion": {
+      "description": "Schema version marker. Required on every config file (§2.x).",
+      "const": 1
+    },
+    "secretRef": {
+      "description": "Credential-free secret pointer (NFR1, §0). A reference to a secret store path or Terraform output — never a plaintext secret value.",
+      "type": "string",
+      "pattern": "^(secretsmanager|ssm|tf)://"
+    },
+    "topologyType": {
+      "description": "Infrastructure topology selector (§0 topology-not-coordinates, NFR7). Never a host/port/url.",
+      "enum": ["built-in", "aws"]
+    },
+    "tenantType": {
+      "description": "Tenant type enum (§4 model note). `secure` is an orthogonal boolean, not a type.",
+      "enum": ["standard", "consortia-member", "consortia-central"]
+    },
+    "envVar": {
+      "description": "A single Helm extraEnvVars entry.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value"],
+      "properties": {
+        "name": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    },
+    "extraEnvVars": {
+      "description": "List of extra environment variables injected into a module (§2.6, §2.2b).",
+      "type": "array",
+      "items": { "$ref": "#/$defs/envVar" }
+    },
+    "resourceQuantities": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "memory": { "type": "string" },
+        "cpu": { "type": "string" }
+      }
+    },
+    "resources": {
+      "description": "Compute resource envelope (§2.2).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requests": { "$ref": "#/$defs/resourceQuantities" },
+        "limits": { "$ref": "#/$defs/resourceQuantities" }
+      }
+    },
+    "autoscaling": {
+      "description": "Horizontal pod autoscaling settings (§2.2).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "minReplicas": { "type": "integer" },
+        "maxReplicas": { "type": "integer" },
+        "targetCPUUtilizationPercentage": { "type": "integer" }
+      }
+    },
+    "moduleOverride": {
+      "description": "Per-module config override (§2.6 namespace.modules.<name>, §2.6b). Compute shape, env, and storage deviations only — never secrets.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "replicaCount": { "type": "integer" },
+        "resources": { "$ref": "#/$defs/resources" },
+        "autoscaling": { "$ref": "#/$defs/autoscaling" },
+        "extraEnvVars": { "$ref": "#/$defs/extraEnvVars" },
+        "extraJavaOpts": { "type": "string" },
+        "initContainer": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "enabled": { "type": "boolean" } }
+        },
+        "volumeClaims": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": { "enabled": { "type": "boolean" } }
+          }
+        }
+      }
+    },
+    "consortiaEntry": {
+      "description": "One consortium: central tenant id, grouping name, and member tenant ids (§2.6, §2.4b).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["central", "name", "members"],
+      "properties": {
+        "central": { "type": "string" },
+        "name": { "type": "string" },
+        "members": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+# §2.3 platform/module-roles.yaml (abbreviated module lists)
+schemaVersion: 1
+
+readWriteModules:
+  - mod-audit
+  - mod-authtoken
+  - mod-circulation-storage
+  - mod-data-import
+  - mod-users
+
+systemUserModules:
+  - mod-data-export-spring
+  - mod-search
+  - mod-consortia
+  - mod-pubsub

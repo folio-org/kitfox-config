@@ -1,0 +1,17 @@
+# §2.2 platform/deployment-profiles/development.yaml
+schemaVersion: 1
+configType: development
+
+defaults:
+  replicaCount: 1
+  resources:
+    requests: { memory: 256Mi }
+    limits:   { memory: 384Mi }
+  autoscaling:
+    enabled: false
+
+# Full per-module Helm values owned by the profile (D1=B, ADR-0009).
+modules:
+  mgr-tenants:
+    resources:
+      limits: { memory: 2Gi }

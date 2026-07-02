@@ -1,0 +1,3 @@
+# kitfox-config schema validator (Epic A, Story A.9).
+jsonschema>=4.20
+PyYAML>=6.0

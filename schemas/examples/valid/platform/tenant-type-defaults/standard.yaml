@@ -1,0 +1,12 @@
+# §2.8 platform/tenant-type-defaults/standard.yaml
+schemaVersion: 1
+type: standard
+
+applications:
+  exclude:
+    - app-consortia
+    - app-consortia-manager
+    - app-dcb
+    - app-requests-ecs
+    - app-requests-mediated
+    - app-requests-mediated-ui

@@ -1,0 +1,13 @@
+# platform/tenant-type-defaults/standard.yaml — default exclusions per type (§2.8)
+schemaVersion: 1
+type: standard
+
+applications:
+  # A standard tenant must not run consortia-only or mediated apps.
+  exclude:
+    - app-consortia
+    - app-consortia-manager
+    - app-dcb
+    - app-requests-ecs
+    - app-requests-mediated
+    - app-requests-mediated-ui
