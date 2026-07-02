@@ -19,36 +19,6 @@
         "autoscaling": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/autoscaling" }
       }
     },
-    "moduleClassOverrides": {
-      "description": "Per-module-class compute overrides (e.g. mgr-* are heavier) (§2.2).",
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "replicaCount": { "type": "integer" },
-          "resources": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/resources" },
-          "autoscaling": { "$ref": "https://kitfox-config.folio.org/schemas/_defs.schema.json#/$defs/autoscaling" }
-        }
-      }
-    },
-    "uiDefaults": {
-      "description": "Build-wide Stripes UI tunables for this profile — inherited by every tenant's UI build (§2.2, §12e-2). NOT per-tenant ui (that is catalog identity).",
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "idleSessionWarningSeconds": { "type": "integer" },
-        "maxUnpagedResourceCount": { "type": "integer" },
-        "rtr": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "idleSessionTTL": { "type": "string" },
-            "idleModalTTL": { "type": "string" }
-          }
-        }
-      }
-    },
     "modules": {
       "description": "Full per-module Helm values owned by this profile (D1=B, ADR-0009). Keyed by module name; permissive value shape to accept the folio-helm-v2 values structure. Credential-free by convention: secrets are k8s existingSecret references, never plaintext.",
       "type": "object",

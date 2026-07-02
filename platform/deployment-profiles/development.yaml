@@ -10,17 +10,6 @@ defaults:
       memory: 384Mi
   autoscaling:
     enabled: false
-moduleClassOverrides:
-  mgr:
-    resources:
-      limits:
-        memory: 2Gi
-uiDefaults:
-  idleSessionWarningSeconds: 60
-  maxUnpagedResourceCount: 2000
-  rtr:
-    idleSessionTTL: 1h
-    idleModalTTL: 30s
 modules:
   edge-caiasoft:
     ingress:

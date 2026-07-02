@@ -13,11 +13,6 @@ defaults:
     minReplicas: 2
     maxReplicas: 6
     targetCPUUtilizationPercentage: 75
-moduleClassOverrides:
-  mgr:
-    resources:
-      limits:
-        memory: 3Gi
 modules:
   edge-caiasoft:
     ingress:

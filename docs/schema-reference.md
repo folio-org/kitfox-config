@@ -158,6 +158,7 @@ field must be a `*Ref` — a plaintext value fails.
 |-------|------|-------|
 | `infra.{pgType,pgVersion,kafkaType,opensearchType,s3Type}` | `topologyType`/string | Default topology |
 | `features.{rwSplit,rtr,ecsCCL,scNative}` | boolean | Removed flags rejected |
+| `uiDefaults.{idleSessionWarningSeconds,maxUnpagedResourceCount,rtr.idleSessionTTL,rtr.idleModalTTL}` | mixed | Global build-wide Stripes tunables; folded into each UI tenant's `ui` at resolve time (moved here from the profiles) |
 | `tenantDefaults.type` / `.secure` | `tenantType` / boolean | |
 | `tenantDefaults.install.{loadReference,loadSample,ignoreErrors,async,reinstall,simulate,purgeOnRollback}` | boolean | Repo-wide install defaults |
 | `tenantDefaults.config.kb.{url,customerId,apiKeyRef}` | string/`secretRef` | |
@@ -165,14 +166,14 @@ field must be a `*Ref` — a plaintext value fails.
 
 ## `deployment-profile` — `platform/deployment-profiles/<configType>.yaml` (§2.2)
 
-**Required:** `schemaVersion, configType`. Compute shape, not feature toggles.
+**Required:** `schemaVersion, configType`. Full per-module Helm values + a compute fallback.
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `defaults.{replicaCount,resources,autoscaling}` | mixed | Default compute envelope |
-| `moduleClassOverrides.<class>.{replicaCount,resources,autoscaling}` | mixed | e.g. `mgr` is heavier |
-| `modules.<name>` | permissive object | Full per-module Helm values for this profile (ADR-0009). Transferred verbatim from `pipelines-shared-library/resources/helm/<configType>.yaml`; consumed as the base module layer before `moduleClassOverrides`, feature overlays, and `namespace.modules.<name>` overrides. Credential-free — only `existingSecret` references, never plaintext values. |
-| `uiDefaults.{idleSessionWarningSeconds,maxUnpagedResourceCount,rtr.idleSessionTTL,rtr.idleModalTTL}` | mixed | Stripes tunables |
+| `defaults.{replicaCount,resources,autoscaling}` | mixed | Fallback compute envelope for a module without an explicit `modules.<name>` entry |
+| `modules.<name>` | permissive object | Full per-module Helm values for this profile (ADR-0009), transferred from `pipelines-shared-library/resources/helm/<configType>.yaml`; the base module layer before feature overlays and `namespace.modules.<name>` overrides. Credential-free — only `existingSecret` references, never plaintext. |
+
+> `moduleClassOverrides` and `uiDefaults` are **no longer** in the profile: the class overrides were redundant under the full per-module transfer, and `uiDefaults` moved to the global `platform/defaults.yaml` (see `platform-defaults`).
 
 ## `feature-overlay` — `platform/feature-overlays/<name>.yaml` (§2.2b)
 

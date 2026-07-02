@@ -55,4 +55,5 @@ This is the Kustomize-"components" / Configuration-as-Data pattern. See
   identity (`tenant-catalog.yaml`, centrals only); the `consortia-single-ui` overlay now
   contributes only the backend `SINGLE_TENANT_UX` module env. "Has a UI bundle" is likewise
   per-tenant catalog identity (`tenants.<id>.ui`), and the build-wide Stripes tunables live in
-  the namespace `uiDefaults` block sourced from the deployment profile.
+  a global `uiDefaults` block in `platform/defaults.yaml` that the resolver folds into each
+  UI-having tenant's `ui` (there is no standalone namespace `uiDefaults` in the resolved model).

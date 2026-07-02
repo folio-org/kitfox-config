@@ -14,6 +14,16 @@ features:
   ecsCCL: false
   scNative: true
 
+# Build-wide Stripes UI tunables (global; was per-deployment-profile). Folded into
+# each UI-having tenant's `ui` at resolve time. Moved here from the profiles since
+# the values are uniform (release/perf variation was an artifact) (§2.1).
+uiDefaults:
+  idleSessionWarningSeconds: 60
+  maxUnpagedResourceCount: 2000
+  rtr:
+    idleSessionTTL: 1h
+    idleModalTTL: 30s
+
 tenantDefaults:
   type: standard
   secure: false

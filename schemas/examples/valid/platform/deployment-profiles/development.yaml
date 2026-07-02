@@ -10,14 +10,8 @@ defaults:
   autoscaling:
     enabled: false
 
-moduleClassOverrides:
-  mgr:
+# Full per-module Helm values owned by the profile (D1=B, ADR-0009).
+modules:
+  mgr-tenants:
     resources:
       limits: { memory: 2Gi }
-
-uiDefaults:
-  idleSessionWarningSeconds: 60
-  maxUnpagedResourceCount: 2000
-  rtr:
-    idleSessionTTL: "1h"
-    idleModalTTL: "30s"

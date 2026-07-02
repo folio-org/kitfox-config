@@ -14,6 +14,13 @@ features:
   ecsCCL: false
   scNative: true
 
+uiDefaults:
+  idleSessionWarningSeconds: 60
+  maxUnpagedResourceCount: 2000
+  rtr:
+    idleSessionTTL: "1h"
+    idleModalTTL: "30s"
+
 tenantDefaults:
   type: standard
   secure: false

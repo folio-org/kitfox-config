@@ -13,17 +13,6 @@ defaults:
     minReplicas: 2
     maxReplicas: 4
     targetCPUUtilizationPercentage: 75
-moduleClassOverrides:
-  mgr:
-    resources:
-      limits:
-        memory: 3Gi
-uiDefaults:
-  idleSessionWarningSeconds: 60
-  maxUnpagedResourceCount: 2000
-  rtr:
-    idleSessionTTL: 8h
-    idleModalTTL: 1m
 modules:
   edge-caiasoft:
     ingress:

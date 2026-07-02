@@ -31,6 +31,23 @@
         "scNative": { "type": "boolean" }
       }
     },
+    "uiDefaults": {
+      "description": "Global build-wide Stripes UI tunables (§2.1). Folded into each UI-having tenant's ui at resolve time. Moved here from the deployment profiles (uniform values).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "idleSessionWarningSeconds": { "type": "integer" },
+        "maxUnpagedResourceCount": { "type": "integer" },
+        "rtr": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "idleSessionTTL": { "type": "string" },
+            "idleModalTTL": { "type": "string" }
+          }
+        }
+      }
+    },
     "tenantDefaults": {
       "description": "Default tenant identity + install + integration config (§2.1).",
       "type": "object",
